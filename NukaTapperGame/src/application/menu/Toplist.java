@@ -9,31 +9,29 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class Toplist {
 	private final AnchorPane rootPane;
 
-    public Toplist() {
-    	this.rootPane = new AnchorPane();
-//    	Panel toplistPanel = new Panel("Toplista", 400, 400);
-//    	rootPane.getChildren().add(toplistPanel);
+	public Toplist(Stage mainStage) {
+		this.rootPane = new AnchorPane();
 		
-    	
-    	
-    	
-    	Panel panel = new Panel("Toplista" ,600, 400);
+		MenuButton backButton = new MenuButton("Back");
+		backButton.setOnAction(e -> {
+			GameMenu mainMenu = new GameMenu(mainStage);
+			
+			mainStage.getScene().setRoot(mainMenu.getRootPane());
+		});
+
+		Panel panel = new Panel("Toplista", 600, 400, backButton);
+
+
 		rootPane.getChildren().add(panel);
-		
+	}
 
-        
-        
-       
-    }
+	public Pane getRootPane() {
+		return rootPane;
+	}
 
-    public Pane getRootPane() {
-        return rootPane ;
-    }
-    
-    
-    
 }

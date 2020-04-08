@@ -34,7 +34,7 @@ public class GameMenu{
 			mainStage.getScene().setRoot(start.getRootPane());
         });
         toplistButton.setOnAction(e -> {
-        	Toplist toplist = new Toplist();
+        	Toplist toplist = new Toplist(mainStage);
         	mainStage.getScene().setRoot(toplist.getRootPane());
         });
         settingsButton.setOnAction(e -> {
@@ -42,7 +42,6 @@ public class GameMenu{
         	mainStage.getScene().setRoot(settings.getRootPane());
         });
         exitButton.setOnAction(e -> {
-        	System.out.println(mainStage);
         	mainStage.close();
         	System.out.println("kilépett(Kilépés gombbal)...menteni kell!");
         });

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -12,7 +13,7 @@ import javafx.scene.text.Font;
 
 public class Panel extends Pane {
 
-	public Panel(String title, double width, double height) {
+	public Panel(String title, double width, double height, Node node) {
 		setPrefWidth(width);
 		setPrefHeight(height);
 		setPadding(new Insets(10, 10, 10, 10));
@@ -25,7 +26,8 @@ public class Panel extends Pane {
 		header.setPrefWidth(width);
 		header.setPrefHeight(50);
 		
-		vbox.getChildren().add(header);
+		
+		vbox.getChildren().addAll(header, node);
 		
 		
 		

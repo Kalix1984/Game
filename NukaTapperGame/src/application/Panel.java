@@ -1,83 +1,45 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.layout.StackPane;
 
-public class Panel extends Pane {
+public class Panel extends BorderPane {
+	private int width;
+	private int height;
+	private int posX;
+	private int posY;
 
-	public Panel(String title, double width, double height, Node node) {
-		setPrefWidth(width);
-		setPrefHeight(height);
-		setPadding(new Insets(10, 10, 10, 10));
-		
-		VBox vbox = new VBox();
-		getChildren().add(vbox);
-		
-		Pane header = new Pane();
-		header.setStyle("-fx-background-color: #223986; -fx-background-radius: 20 20 0 0;");
-		header.setPrefWidth(width);
-		header.setPrefHeight(50);
-		
-		
-		vbox.getChildren().addAll(header, node);
-		
-		
-		
-		
+	Header title;
+	
+	Pane content;
+	StackPane footer;
 
-		Label panelName = new Label();
-		panelName.setFont(new Font("Verdana", 30));
-		panelName.setText(title);
-		panelName.setTextFill(Color.web("white"));
-		panelName.setLayoutX(200);
-
+	public Panel(int width, int height, int posX, int posY) {
+		this.width = width;
+		this.height = height;
 		
-		header.getChildren().add(panelName);
-		
-//		
-//		List<Label> elements = new ArrayList<>();
-//		elements.add(createLabel("1. alma"));
-//		elements.add(createLabel("2. körte"));
-//		elements.add(createLabel("3. szilva"));
-//		elements.add(createLabel("4. cseresznye"));
-//		elements.add(createLabel("5. kivi"));
-//		
-//		MenuButton backButton = new MenuButton("Vissza");
-//		backButton.setOnAction(e->{
-//			System.out.println("back");
-//		});
-//		
-//		
-//		
-//		vbox.setTranslateX(300);
-//		vbox.setTranslateY(150);
-//		
-//		for (Label label : elements) {
-//			vbox.getChildren().add(label);
-//		}
-//		vbox.getChildren().add(backButton);
-//		
-//		
-//		
-//		
-//		super.getChildren().addAll(bg, vbox);
+		this.posX = posX;
+		this.posY = posY;
 
+		this.setPrefWidth(width);
+		this.setPrefHeight(height);
+
+		this.setLayoutX(posX);
+		this.setLayoutY(posY);
+		
+		this.setTop(title);
+		this.setCenter(content);
+		this.setBottom(footer);
+		
 	}
-//	//content
-//	private Label createLabel(String name) {
-//		Label label = new Label();
-//		label.setFont(new Font("Verdana", 20));
-//		label.setText(name);
-//		
-//		return label;
-//	}
+	
+	public void addHeader() {
+		Pane pane = new Pane();
+		pane.setStyle("-fx-background-color: white;");
+		this.getChildren().add(pane);
+	}
 
+	
 }

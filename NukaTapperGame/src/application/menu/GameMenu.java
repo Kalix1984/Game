@@ -30,7 +30,7 @@ public class GameMenu{
         MenuButton exitButton = new MenuButton("Kilépés");
         
         startButton.setOnAction(e -> {
-        	Start start = new Start();
+        	Start start = new Start(mainStage);
 			mainStage.getScene().setRoot(start.getRootPane());
         });
         toplistButton.setOnAction(e -> {

@@ -2,16 +2,20 @@ package application;
 
 import application.menu.GameMenu;
 import application.menu.MenuButton;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class ViewManager {
 
 	private Stage mainStage;
 	private Scene mainScene;
-	private Pane mainPane;
+	private Parent mainPane;
 
 	static final int WIDTH = 800;
 	static final int HEIGHT = 600;
@@ -19,7 +23,7 @@ public class ViewManager {
 	public ViewManager() {
 
 		this.mainStage = new Stage();
-		this.mainPane = new Pane();
+		this.mainPane = generateSplashScreen();
 		this.mainScene = new Scene(mainPane, WIDTH, HEIGHT);
 
 		setupWindow();
@@ -41,53 +45,35 @@ public class ViewManager {
 		});
 	}
 
+	
+	public Parent getMainPane() {
+		return mainPane;
+	}
+
 	public Stage getMainStage() {
 		return mainStage;
 	}
 
-	public void setMainStage(Stage mainStage) {
-		this.mainStage = mainStage;
-	}
-
-	public Scene getMainScene() {
-		return mainScene;
-	}
-
-	public void setMainScene(Scene mainScene) {
-		this.mainScene = mainScene;
-	}
-
-	public Pane getMainPane() {
-		return mainPane;
-	}
-
-	public void setMainPane(Pane mainPane) {
-		this.mainPane = mainPane;
-	}
-
-	public static int getWidth() {
-		return WIDTH;
-	}
-
-	public static int getHeight() {
-		return HEIGHT;
-	}
-
-	public void initSplashScreen() {
-
+	public Parent generateSplashScreen() {
+		StackPane layout = new StackPane();
+		
+		VBox box = new VBox(10);
+		box.setAlignment(Pos.CENTER);
+		
+		Rectangle rect = new Rectangle(400, 400, Color.BLUE);
 		MenuButton btn = new MenuButton("Tovább");
 		
-		btn.setLayoutX(WIDTH / 2 - (btn.getPrefWidth() / 2));
-		btn.setLayoutY(HEIGHT - 100);
-		
-		mainPane.getChildren().add(btn);
+		box.getChildren().addAll(rect, btn);
+		layout.getChildren().add(box);
 
 		btn.setOnAction(e -> {
 			GameMenu mainMenu = new GameMenu(mainStage);
 			
-			getMainScene().setRoot(mainMenu.getRootPane());
+			mainStage.getScene().setRoot(mainMenu.getRootPane());
 		});
 
+		
+		return layout;
 	}
 
 }

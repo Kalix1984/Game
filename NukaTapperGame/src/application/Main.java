@@ -10,7 +10,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		ViewManager manager = new ViewManager();
 		primaryStage = manager.getMainStage();
-		manager.initSplashScreen();
+//		manager.generateSplashScreen();
 		primaryStage.show();
 	}
 	

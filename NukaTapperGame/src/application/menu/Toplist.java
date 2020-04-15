@@ -4,6 +4,7 @@ import application.Panel;
 import application.Header;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -15,16 +16,20 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Toplist {
-	private final AnchorPane rootPane;
+	private final Parent rootPane;
+	private final Stage mainStage;
 
 	public Toplist(Stage mainStage) {
-		this.rootPane = new AnchorPane();
+		this.rootPane = generateToplist();
+		this.mainStage = mainStage;
 		
-		initToplistView(mainStage);
+		
 		
 	}
 
-	private void initToplistView(Stage mainStage) {
+	private Parent generateToplist() {
+		StackPane layout = new StackPane();
+		
 		MenuButton backButton = new MenuButton("Vissza");
 		backButton.setAlignment(Pos.CENTER);
 		backButton.setOnAction(e -> {
@@ -63,10 +68,12 @@ public class Toplist {
 		toplistPanel.setCenter(content);
 		toplistPanel.setBottom(footer);
 
-		rootPane.getChildren().add(toplistPanel);
+		layout.getChildren().add(toplistPanel);
+		
+		return layout;
 	}
 
-	public Pane getRootPane() {
+	public Parent getRootPane() {
 		return rootPane;
 	}
 

@@ -36,11 +36,11 @@ public class GameMenu{
 			mainStage.getScene().setRoot(start.getRootPane());
         });
         toplistButton.setOnAction(e -> {
-//        	Toplist toplist = new Toplist(mainStage);
-//        	mainStage.getScene().setRoot(toplist.getRootPane());
+        	Toplist toplist = new Toplist(mainStage);
+        	mainStage.getScene().setRoot(toplist.getRootPane());
         });
         settingsButton.setOnAction(e -> {
-        	Settings settings = new Settings();
+        	Settings settings = new Settings(mainStage);
         	mainStage.getScene().setRoot(settings.getRootPane());
         });
         exitButton.setOnAction(e -> {

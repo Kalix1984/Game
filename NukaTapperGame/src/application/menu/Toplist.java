@@ -22,13 +22,10 @@ public class Toplist {
 	public Toplist(Stage mainStage) {
 		this.rootPane = generateToplist();
 		this.mainStage = mainStage;
-		
-		
-		
 	}
 
 	private Parent generateToplist() {
-		StackPane layout = new StackPane();
+		AnchorPane layout = new AnchorPane();
 		
 		MenuButton backButton = new MenuButton("Vissza");
 		backButton.setAlignment(Pos.CENTER);

@@ -1,4 +1,4 @@
-package application.menu;
+package application.trashcode;
 
 
 import application.entities.Entity;

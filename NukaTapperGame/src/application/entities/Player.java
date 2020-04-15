@@ -9,12 +9,20 @@ public class Player extends Entity {
 	private int score;
 	
 	public Player() {
+		super();
 		life = 4;
 		playerOnBar = PlayerPos.BAR4;
 		level = Level.LEVEL1;
 		score = 0;
 	}
 	
+	public Player(int width, int height, int posX, int posY) {
+		super(width, height, posX, posY);
+		life = 4;
+		playerOnBar = PlayerPos.BAR4;
+		level = Level.LEVEL1;
+		score = 0;
+	}
 	
 	public int getLife() {
 		return life;
@@ -51,7 +59,5 @@ public class Player extends Entity {
 	public void addScore(int plusScore) {
 		this.score += plusScore;
 	}
-
-	
 
 }

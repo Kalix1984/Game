@@ -34,9 +34,6 @@ public class Entity
         this.positionY = posY;
     }
     
-
-    
-    
     public Color getFillColor() {
 		return fillColor;
 	}
@@ -64,7 +61,23 @@ public class Entity
         positionY = y;
     }
 
-    public void setVelocity(double x, double y)
+    public double getPositionX() {
+		return positionX;
+	}
+
+	public double getPositionY() {
+		return positionY;
+	}
+	
+	public void setPositionX(double positionX) {
+		this.positionX = positionX;
+	}
+
+	public void setPositionY(double positionY) {
+		this.positionY = positionY;
+	}
+
+	public void setVelocity(double x, double y)
     {
         velocityX = x;
         velocityY = y;
@@ -81,6 +94,12 @@ public class Entity
         positionX += velocityX * time;
         positionY += velocityY * time;
     }
+    
+    public void update()
+    {
+    	positionX += velocityX;
+    	positionY += velocityY;
+    }
 
     public void renderWithImage(GraphicsContext gc)
     {
@@ -90,6 +109,7 @@ public class Entity
     public void renderWithRect(GraphicsContext gc)
     {
     	gc.setFill(Color.BLUE);
+    	gc.setImageSmoothing(true);
         gc.fillRect(positionX,positionY,width,height);
 
     }

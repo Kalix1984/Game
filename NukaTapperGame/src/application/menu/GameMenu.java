@@ -1,5 +1,6 @@
 package application.menu;
 
+import application.GameViewManager;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
@@ -32,8 +33,10 @@ public class GameMenu{
         MenuButton exitButton = new MenuButton("Kilépés");
         
         startButton.setOnAction(e -> {
-        	Start start = new Start(mainStage);
-			mainStage.getScene().setRoot(start.getRootPane());
+//        	Start start = new Start(mainStage);
+        	GameViewManager game = new GameViewManager();
+        	game.newGame(mainStage);
+//			mainStage.getScene().setRoot(start.getRootPane());
         });
         toplistButton.setOnAction(e -> {
         	Toplist toplist = new Toplist(mainStage);

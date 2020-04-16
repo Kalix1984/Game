@@ -20,11 +20,5 @@ public class Header extends Node{
 		
 		bg.setPadding(new Insets(5));
 		bg.setStyle("-fx-background-color: green;");
-		
 	}
-	
-	
-	
-	
-	
 }

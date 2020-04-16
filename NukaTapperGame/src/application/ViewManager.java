@@ -35,7 +35,7 @@ public class ViewManager {
 
 	private void setupWindow() {
 		mainStage.setScene(mainScene);
-		mainStage.setTitle("Nuka Tapper");
+		mainStage.setTitle("Nuka Tapper Game");
 		mainStage.setResizable(false);
 
 		mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

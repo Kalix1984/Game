@@ -1,6 +1,6 @@
 package application.entities;
 
-public enum PlayerPosY {
+public enum OnBar {
 	BAR1,
 	BAR2,
 	BAR3,

@@ -3,7 +3,7 @@ package application.entities;
 
 public class Player extends Entity {
 
-	private PlayerPosY playerOnBar;
+	private OnBar playerOnBar;
 	private Level level;
 	private int life;
 	private int score;
@@ -11,7 +11,7 @@ public class Player extends Entity {
 	public Player() {
 		super();
 		life = 4;
-		playerOnBar = PlayerPosY.BAR4;
+		playerOnBar = OnBar.BAR4;
 		level = Level.LEVEL1;
 		score = 0;
 	}
@@ -19,7 +19,7 @@ public class Player extends Entity {
 	public Player(int width, int height, int posX, int posY) {
 		super(width, height, posX, posY);
 		life = 4;
-		playerOnBar = PlayerPosY.BAR4;
+		playerOnBar = OnBar.BAR4;
 		level = Level.LEVEL1;
 		score = 0;
 	}
@@ -32,11 +32,11 @@ public class Player extends Entity {
 		this.life -= 1;
 	}
 
-	public PlayerPosY getPlayerOnBar() {
+	public OnBar getPlayerOnBar() {
 		return this.playerOnBar;
 	}
 
-	private void setPlayerPosY(PlayerPosY playerPos) {
+	private void setPlayerPosY(OnBar playerPos) {
 		this.playerOnBar = playerPos;
 	}
 	

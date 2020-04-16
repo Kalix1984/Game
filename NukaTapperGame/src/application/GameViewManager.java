@@ -4,7 +4,7 @@ import application.entities.Bar;
 import application.entities.Guest;
 import application.entities.OSD;
 import application.entities.Player;
-import application.entities.PlayerPosY;
+import application.entities.OnBar;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -63,7 +63,7 @@ public class GameViewManager {
 
 		gameScene = new Scene(gamePane, WIDTH, HEIGHT);
 		gameStage.setScene(gameScene);
-		gameStage.setTitle("A játék fut");
+		gameStage.setTitle("Nuka Trapper Game");
 		gameStage.setResizable(false);
 	}
 
@@ -97,6 +97,8 @@ public class GameViewManager {
 
 				// render
 				gameSpace.clearRect(0, 0, 800, 600);
+				gameSpace.setFill(Color.ANTIQUEWHITE);
+				gameSpace.fillRect(0, 0, 800, 600);
 
 				bar1.renderWithRect(gameSpace, Color.BROWN);
 				bar2.renderWithRect(gameSpace, Color.BROWN);
@@ -106,18 +108,17 @@ public class GameViewManager {
 
 				// OSD
 				score = new OSD();
-				score.setPos(80, 50);
+				score.setPos(80, 30);
 				score.draw(gameSpace, Integer.toString(player.getScore()), Color.BLACK);
 
 				level = new OSD();
-				level.setPos(760, 50);
+				level.setPos(760, 30);
 				level.draw(gameSpace, player.getLevel().toString(), Color.BLACK);
 
 				life = new OSD();
-				life.setPos(10, 70);
+				life.setPos(10, 40);
 				life.draw(gameSpace, player.getLife(), Color.RED);
 
-//                System.out.println(player.getPlayerOnBar());
 			}
 		};
 		timer.start();
@@ -125,16 +126,17 @@ public class GameViewManager {
 
 	protected void movePlayer() {
 		player.setVelocity(0, 0);
-
-		if (isLeftKeyPressed && player.getPositionX() > 50) {
+		
+		
+		if (isLeftKeyPressed && player.getPositionX() > getBarXPosWherePlayerStart()) {
 			player.addVelocity(-3, 0);
 
-		} else if (isRightKeyPressed) {
+		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
 			player.addVelocity(+3, 0);
 
 		} else if (isPlayerOnAnotherBar) {
 			player.setPositionY(getBarYPosWherePlayerIs());
-			player.setPositionX(getBarXPosWherePlayerIs());
+			player.setPositionX(getBarXPosWherePlayerStart());
 			isPlayerOnAnotherBar = false;
 		}
 	}
@@ -155,7 +157,7 @@ public class GameViewManager {
 		return 0;
 	}
 	
-	private int getBarXPosWherePlayerIs() {
+	private int getBarXPosWherePlayerStart() {
 		
 		int playerStartPointInX = player.getWidth() + 10;
 		
@@ -172,6 +174,22 @@ public class GameViewManager {
 		
 		return 0;
 	}
+	
+	private int getBarEndPosition() {
+		
+		switch (player.getPlayerOnBar()) {
+		case BAR1:
+			return bar1.getEndPointInX();
+		case BAR2:
+			return bar2.getEndPointInX();
+		case BAR3:
+			return bar3.getEndPointInX();
+		case BAR4:
+			return bar4.getEndPointInX();
+		}
+		
+		return 0;
+	}
 
 	private void createGameElements() {
 
@@ -179,15 +197,19 @@ public class GameViewManager {
 		bar2 = new Bar(500, 40, 150, 300);
 		bar3 = new Bar(550, 40, 125, 400);
 		bar4 = new Bar(600, 40, 100, 500);
+		
+		guest1 = new Guest();
 
-		player = new Player(40, 80, 80, 460);
+		
+		
+		player = new Player(40, 80, 50, 460);
 
 		player.addScore(7100);
 		player.looseLife();
 
 		System.out.println("pontok: " + player.getScore());
 		System.out.println("Élet: " + player.getLife());
-		System.out.println("Élet: " + player.getLevel());
+		System.out.println("Szint: " + player.getLevel());
 
 	}
 
@@ -225,12 +247,6 @@ public class GameViewManager {
 			case RIGHT:
 				isRightKeyPressed = false;
 				break;
-//			case UP:
-//				isUpKeyPressed = false;
-//				break;
-//			case DOWN:
-//				isDownKeyPressed = false;
-//				break;
 			case SPACE:
 				isSpaceKeyPressed = false;
 				break;

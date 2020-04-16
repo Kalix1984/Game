@@ -9,14 +9,13 @@ import javafx.scene.paint.Color;
 public class Entity
 {
     private Image image;
-    private Color fillColor;
  
-    private double positionX;
-    private double positionY;    
+    private int positionX;
+    private int positionY;    
     private double velocityX;
     private double velocityY;
-    private double width;
-    private double height;
+    private int width;
+    private int height;
 
     public Entity()
     {
@@ -34,19 +33,11 @@ public class Entity
         this.positionY = posY;
     }
     
-    public Color getFillColor() {
-		return fillColor;
-	}
-
-	public void setFillColor(Color fillColor) {
-		this.fillColor = fillColor;
-	}
-
 	public void setImage(Image image)
     {
         this.image = image;
-        width = image.getWidth();
-        height = image.getHeight();
+        width = (int) image.getWidth();
+        height = (int) image.getHeight();
     }
     
     public void setImage(String filename)
@@ -55,25 +46,33 @@ public class Entity
         setImage(i);
     }
 
-    public void setPosition(double x, double y)
+    public void setPosition(int x, int y)
     {
         positionX = x;
         positionY = y;
     }
 
-    public double getPositionX() {
+    public int getPositionX() {
 		return positionX;
 	}
 
-	public double getPositionY() {
+	public int getPositionY() {
 		return positionY;
 	}
 	
-	public void setPositionX(double positionX) {
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setPositionX(int positionX) {
 		this.positionX = positionX;
 	}
 
-	public void setPositionY(double positionY) {
+	public void setPositionY(int positionY) {
 		this.positionY = positionY;
 	}
 
@@ -98,7 +97,7 @@ public class Entity
     public void update()
     {
     	positionX += velocityX;
-    	positionY += velocityY;
+//    	positionY += velocityY;
     }
 
     public void renderWithImage(GraphicsContext gc)
@@ -106,9 +105,9 @@ public class Entity
         gc.drawImage( image, positionX, positionY );
     }
     
-    public void renderWithRect(GraphicsContext gc)
+    public void renderWithRect(GraphicsContext gc, Color color)
     {
-    	gc.setFill(Color.BLUE);
+    	gc.setFill(color);
     	gc.setImageSmoothing(true);
         gc.fillRect(positionX,positionY,width,height);
 

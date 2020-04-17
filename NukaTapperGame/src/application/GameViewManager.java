@@ -1,21 +1,17 @@
 package application;
 
 import application.entities.Bar;
+import application.entities.Door;
 import application.entities.Guest;
 import application.entities.OSD;
 import application.entities.Player;
-import application.entities.OnBar;
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class GameViewManager {
@@ -37,12 +33,21 @@ public class GameViewManager {
 	private boolean isSpaceKeyReleased;
 
 	private Player player;
+	
 	private Guest guest1;
+	private Guest guest2;
+	private Guest guest3;
+	private Guest guest4;
 
 	private Bar bar1;
 	private Bar bar2;
 	private Bar bar3;
 	private Bar bar4;
+	
+	private Door door1;
+	private Door door2;
+	private Door door3;
+	private Door door4;
 
 	private OSD score;
 	private OSD level;
@@ -63,7 +68,7 @@ public class GameViewManager {
 
 		gameScene = new Scene(gamePane, WIDTH, HEIGHT);
 		gameStage.setScene(gameScene);
-		gameStage.setTitle("Nuka Trapper Game");
+		gameStage.setTitle("Nuka Tapper Game");
 		gameStage.setResizable(false);
 	}
 
@@ -100,6 +105,16 @@ public class GameViewManager {
 				gameSpace.clearRect(0, 0, 800, 600);
 				gameSpace.setFill(Color.ANTIQUEWHITE);
 				gameSpace.fillRect(0, 0, 800, 600);
+				
+				guest4.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				guest3.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				guest2.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				guest1.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				
+				door1.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
+				door2.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
+				door3.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
+				door4.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
 
 				bar1.renderWithRect(gameSpace, Color.BROWN);
 				bar2.renderWithRect(gameSpace, Color.BROWN);
@@ -206,13 +221,28 @@ public class GameViewManager {
 	}
 
 	private void createGameElements() {
-
+		
 		bar1 = new Bar(450, 40, 175, 200);
 		bar2 = new Bar(500, 40, 150, 300);
 		bar3 = new Bar(550, 40, 125, 400);
 		bar4 = new Bar(600, 40, 100, 500);
 		
-		guest1 = new Guest();
+		guest4 = new Guest(bar4);
+		guest4.setVisible(true);
+		
+		guest3 = new Guest(bar3);
+		guest3.setVisible(true);
+		
+		guest2 = new Guest(bar2);
+		guest2.setVisible(true);
+		
+		guest1 = new Guest(bar1);
+		guest1.setVisible(true);
+		
+		door1 = new Door(bar1);
+		door2 = new Door(bar2);
+		door3 = new Door(bar3);
+		door4 = new Door(bar4);
 		
 		player = new Player(40, 80, 50, 460);
 
@@ -235,19 +265,9 @@ public class GameViewManager {
 			case RIGHT:
 				isRightKeyPressed = true;
 				break;
-//			case UP:
-//				isPlayerOnAnotherBar = player.changePlayerPosUp();
-//				break;
-//			case DOWN:
-//				isPlayerOnAnotherBar = player.changePlayerPosDown();
-//				break;
-//			case SPACE:
-//				isSpaceKeyPressed = true;
-//				break;
 			default:
 				break;
 			}
-
 		});
 
 		gameScene.setOnKeyReleased(e -> {

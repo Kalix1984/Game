@@ -34,7 +34,7 @@ public class GameViewManager {
 	private boolean isLeftKeyPressed;
 	private boolean isRightKeyPressed;
 	private boolean isPlayerOnAnotherBar;
-	private boolean isSpaceKeyPressed;
+	private boolean isSpaceKeyReleased;
 
 	private Player player;
 	private Guest guest1;
@@ -93,6 +93,7 @@ public class GameViewManager {
 
 				// update
 				movePlayer();
+				tapBeer();
 				player.update();
 
 				// render
@@ -124,7 +125,20 @@ public class GameViewManager {
 		timer.start();
 	}
 
-	protected void movePlayer() {
+	private void tapBeer() {
+		if (isSpaceKeyReleased && isPlayerAtStartingPos()) {
+			System.out.println("A játékos a kezdőpozícióban van...csapolhat");
+		}
+		
+		isSpaceKeyReleased = false;
+	}
+
+	private boolean isPlayerAtStartingPos() {
+		
+		return player.getPositionX() == getBarXPosWherePlayerStart();
+	}
+
+	private void movePlayer() {
 		player.setVelocity(0, 0);
 		
 		
@@ -199,8 +213,6 @@ public class GameViewManager {
 		bar4 = new Bar(600, 40, 100, 500);
 		
 		guest1 = new Guest();
-
-		
 		
 		player = new Player(40, 80, 50, 460);
 
@@ -223,15 +235,15 @@ public class GameViewManager {
 			case RIGHT:
 				isRightKeyPressed = true;
 				break;
-			case UP:
-				isPlayerOnAnotherBar = player.changePlayerPosUp();
-				break;
-			case DOWN:
-				isPlayerOnAnotherBar = player.changePlayerPosDown();
-				break;
-			case SPACE:
-				isSpaceKeyPressed = true;
-				break;
+//			case UP:
+//				isPlayerOnAnotherBar = player.changePlayerPosUp();
+//				break;
+//			case DOWN:
+//				isPlayerOnAnotherBar = player.changePlayerPosDown();
+//				break;
+//			case SPACE:
+//				isSpaceKeyPressed = true;
+//				break;
 			default:
 				break;
 			}
@@ -247,8 +259,14 @@ public class GameViewManager {
 			case RIGHT:
 				isRightKeyPressed = false;
 				break;
+			case UP:
+				isPlayerOnAnotherBar = player.changePlayerPosUp();
+				break;
+			case DOWN:
+				isPlayerOnAnotherBar = player.changePlayerPosDown();
+				break;	
 			case SPACE:
-				isSpaceKeyPressed = false;
+				isSpaceKeyReleased = true;
 				break;
 			default:
 				break;

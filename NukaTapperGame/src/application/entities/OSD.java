@@ -54,8 +54,5 @@ public class OSD {
 			gc.fillRoundRect(elementXPos, posY, 20, 30, 5, 5);
 			elementXPos += 20 + 5;
 		}
-		
 	}
-	
-	
 }

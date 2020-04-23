@@ -1,8 +1,12 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.Guest;
+import application.entities.Mug;
 import application.entities.OSD;
 import application.entities.Player;
 import javafx.animation.AnimationTimer;
@@ -33,25 +37,25 @@ public class GameViewManager {
 	private boolean isSpaceKeyReleased;
 
 	private Player player;
-	
+	private List<Guest> guests = new ArrayList<>();
+
 	private Guest guest1;
-	private Guest guest2;
-	private Guest guest3;
-	private Guest guest4;
+//	private Guest guest2;
+//	private Guest guest3;
+//	private Guest guest4;
 
 	private Bar bar1;
 	private Bar bar2;
 	private Bar bar3;
 	private Bar bar4;
-	
-	private Door door1;
-	private Door door2;
-	private Door door3;
-	private Door door4;
+
+	private List<Door> doors = new ArrayList<>();
 
 	private OSD score;
 	private OSD level;
 	private OSD life;
+
+	private List<Mug> mugs = new ArrayList<>();
 
 	public GameViewManager() {
 		initGameStage();
@@ -95,44 +99,54 @@ public class GameViewManager {
 
 			@Override
 			public void handle(long currentNanoTime) {
+				// clear gameSpace
+				gameSpace.clearRect(0, 0, 800, 600);
+				gameSpace.setFill(Color.ANTIQUEWHITE);
+				gameSpace.fillRect(0, 0, 800, 600);
 
 				// update
 				movePlayer();
 				tapBeer();
 				player.update();
+				guest1.update();
+
 
 				// render
-				gameSpace.clearRect(0, 0, 800, 600);
-				gameSpace.setFill(Color.ANTIQUEWHITE);
-				gameSpace.fillRect(0, 0, 800, 600);
-				
-				guest4.renderWithRect(gameSpace, Color.BLUEVIOLET);
-				guest3.renderWithRect(gameSpace, Color.BLUEVIOLET);
-				guest2.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				guest1.setVelocity(-0.5, 0);
 				guest1.renderWithRect(gameSpace, Color.BLUEVIOLET);
-				
-				door1.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
-				door2.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
-				door3.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
-				door4.renderWithRect(gameSpace, Color.ANTIQUEWHITE);
+
+				for (Door door : doors) {
+					door.renderWithRect(gameSpace, Color.BLACK);
+				}
 
 				bar1.renderWithRect(gameSpace, Color.BROWN);
 				bar2.renderWithRect(gameSpace, Color.BROWN);
 				bar3.renderWithRect(gameSpace, Color.BROWN);
 				bar4.renderWithRect(gameSpace, Color.BROWN);
+				
+				//Mug render & update
+				int index = 0;
+				
+				for (Mug mug : mugs) {
+					mug.renderWithRect(gameSpace, Color.AQUAMARINE);
+					mug.update();
+					
+					if (mug.intersects(guest1)) {
+						System.out.println(guest1.getDistanceFromDoor(bar1));
+						mug.setVelocity(0, 0);
+						guest1.setVelocity(10, 0);
+						System.out.println(guest1.getDistanceFromDoor(bar1));
+					}
+					
+//				
+					index++;
+				}
+				
 				player.renderWithRect(gameSpace, Color.BLUE);
-
+				
 				// OSD
-				score = new OSD();
-				score.setPos(80, 30);
 				score.draw(gameSpace, Integer.toString(player.getScore()), Color.BLACK);
-
-				level = new OSD();
-				level.setPos(760, 30);
 				level.draw(gameSpace, player.getLevel().toString(), Color.BLACK);
-
-				life = new OSD();
-				life.setPos(10, 40);
 				life.draw(gameSpace, player.getLife(), Color.RED);
 
 			}
@@ -142,37 +156,61 @@ public class GameViewManager {
 
 	private void tapBeer() {
 		if (isSpaceKeyReleased && isPlayerAtStartingPos()) {
-			System.out.println("A játékos a kezdőpozícióban van...csapolhat");
+//			System.out.println("A játékos a kezdőpozícióban van...csapolhat");
+
+//			double mugY = player.getPositionY()+10;
+//			double mugX = player.getPositionX()+20;
+
+			Bar actualBar = null;
+
+			switch (player.getActualBar()) {
+			case BAR1:
+				actualBar = bar1;
+				break;
+			case BAR2:
+				actualBar = bar2;
+				break;
+			case BAR3:
+				actualBar = bar3;
+				break;
+			case BAR4:
+				actualBar = bar4;
+				break;
+
+			}
+
+//			System.out.println(actualBar);
+			mugs.add(new Mug(actualBar));
+
 		}
-		
+
 		isSpaceKeyReleased = false;
 	}
 
 	private boolean isPlayerAtStartingPos() {
-		
-		return player.getPositionX() == getBarXPosWherePlayerStart();
+
+		return player.getPositionX() == getActualBarXPos();
 	}
 
 	private void movePlayer() {
 		player.setVelocity(0, 0);
-		
-		
-		if (isLeftKeyPressed && player.getPositionX() > getBarXPosWherePlayerStart()) {
+
+		if (isLeftKeyPressed && player.getPositionX() > getActualBarXPos()) {
 			player.addVelocity(-3, 0);
 
 		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
 			player.addVelocity(+3, 0);
 
 		} else if (isPlayerOnAnotherBar) {
-			player.setPositionY(getBarYPosWherePlayerIs());
-			player.setPositionX(getBarXPosWherePlayerStart());
+			player.setPositionY(getActualBarYPos());
+			player.setPositionX(getActualBarXPos());
 			isPlayerOnAnotherBar = false;
 		}
 	}
 
-	private int getBarYPosWherePlayerIs() {
+	private double getActualBarYPos() {
 
-		switch (player.getPlayerOnBar()) {
+		switch (player.getActualBar()) {
 		case BAR1:
 			return (bar1.getPositionY() - bar1.getHeight());
 		case BAR2:
@@ -185,12 +223,12 @@ public class GameViewManager {
 
 		return 0;
 	}
-	
-	private int getBarXPosWherePlayerStart() {
-		
-		int playerStartPointInX = player.getWidth() + 10;
-		
-		switch (player.getPlayerOnBar()) {
+
+	private double getActualBarXPos() {
+
+		double playerStartPointInX = player.getWidth() + 10;
+
+		switch (player.getActualBar()) {
 		case BAR1:
 			return (bar1.getPositionX() - playerStartPointInX);
 		case BAR2:
@@ -200,13 +238,13 @@ public class GameViewManager {
 		case BAR4:
 			return (bar4.getPositionX() - playerStartPointInX);
 		}
-		
+
 		return 0;
 	}
-	
+
 	private int getBarEndPosition() {
-		
-		switch (player.getPlayerOnBar()) {
+
+		switch (player.getActualBar()) {
 		case BAR1:
 			return bar1.getEndPointInX();
 		case BAR2:
@@ -216,42 +254,34 @@ public class GameViewManager {
 		case BAR4:
 			return bar4.getEndPointInX();
 		}
-		
+
 		return 0;
 	}
 
 	private void createGameElements() {
-		
+
+		score = new OSD();
+		score.setPos(80, 30);
+
+		level = new OSD();
+		level.setPos(760, 30);
+
+		life = new OSD();
+		life.setPos(10, 40);
+
 		bar1 = new Bar(450, 40, 175, 200);
 		bar2 = new Bar(500, 40, 150, 300);
 		bar3 = new Bar(550, 40, 125, 400);
 		bar4 = new Bar(600, 40, 100, 500);
-		
-		guest4 = new Guest(bar4);
-		guest4.setVisible(true);
-		
-		guest3 = new Guest(bar3);
-		guest3.setVisible(true);
-		
-		guest2 = new Guest(bar2);
-		guest2.setVisible(true);
-		
+
 		guest1 = new Guest(bar1);
-		guest1.setVisible(true);
-		
-		door1 = new Door(bar1);
-		door2 = new Door(bar2);
-		door3 = new Door(bar3);
-		door4 = new Door(bar4);
-		
+
+		doors.add(new Door(bar1));
+		doors.add(new Door(bar2));
+		doors.add(new Door(bar3));
+		doors.add(new Door(bar4));
+
 		player = new Player(40, 80, 50, 460);
-
-		player.addScore(7100);
-		player.looseLife();
-
-		System.out.println("pontok: " + player.getScore());
-		System.out.println("Élet: " + player.getLife());
-		System.out.println("Szint: " + player.getLevel());
 
 	}
 
@@ -284,9 +314,10 @@ public class GameViewManager {
 				break;
 			case DOWN:
 				isPlayerOnAnotherBar = player.changePlayerPosDown();
-				break;	
+				break;
 			case SPACE:
 				isSpaceKeyReleased = true;
+//				System.out.println("poharak: " + mugs.size());
 				break;
 			default:
 				break;

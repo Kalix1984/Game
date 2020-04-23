@@ -4,7 +4,6 @@ package application.entities;
 public class Guest extends Entity {
 	
 	private GuestStatus status;
-	private boolean isVisible;
 	
 	public Guest(Bar bar) {
 		super(40, 80, 0, 0);
@@ -13,18 +12,8 @@ public class Guest extends Entity {
 		setPositionX(bar.getPositionX() + bar.getWidth());
 		
 		this.status = GuestStatus.COME;
-		this.isVisible = false;
 		
 	}
-	
-	public boolean isVisible() {
-		return isVisible;
-	}
-
-	public void setVisible(boolean isVisible) {
-		this.isVisible = isVisible;
-	}
-
 	
 	public GuestStatus getStatus() {
 		return status;
@@ -32,6 +21,10 @@ public class Guest extends Entity {
 
 	public void setStatus(GuestStatus status) {
 		this.status = status;
+	}
+	
+	public double getDistanceFromDoor(Bar bar) {
+		return bar.getEndPointInX() - getPositionX();
 	}
 	
 	

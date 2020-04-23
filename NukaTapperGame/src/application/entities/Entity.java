@@ -10,12 +10,12 @@ public class Entity
 {
     private Image image;
  
-    private int positionX;
-    private int positionY;    
+    private double positionX;
+    private double positionY;    
     private double velocityX;
     private double velocityY;
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
     public Entity()
     {
@@ -25,7 +25,7 @@ public class Entity
         velocityY = 0;
     }
     
-    public Entity(int width, int height, int posX, int posY)
+    public Entity(double width, double height, double posX, double posY)
     {
         this.width = width;
         this.height = height;
@@ -52,27 +52,27 @@ public class Entity
         positionY = y;
     }
 
-    public int getPositionX() {
+    public double getPositionX() {
 		return positionX;
 	}
 
-	public int getPositionY() {
+	public double getPositionY() {
 		return positionY;
 	}
 	
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
 
-	public void setPositionX(int positionX) {
+	public void setPositionX(double positionX) {
 		this.positionX = positionX;
 	}
 
-	public void setPositionY(int positionY) {
+	public void setPositionY(double positionY) {
 		this.positionY = positionY;
 	}
 
@@ -97,7 +97,6 @@ public class Entity
     public void update()
     {
     	positionX += velocityX;
-//    	positionY += velocityY;
     }
 
     public void renderWithImage(GraphicsContext gc)

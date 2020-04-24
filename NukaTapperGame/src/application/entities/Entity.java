@@ -91,13 +91,13 @@ public class Entity
     public void update(double time)
     {
         positionX += velocityX * time;
-        positionY += velocityY * time;
+      
     }
     
-    public void update()
-    {
-    	positionX += velocityX;
-    }
+//    public void update()
+//    {
+//    	positionX += velocityX;
+//    }
 
     public void renderWithImage(GraphicsContext gc)
     {

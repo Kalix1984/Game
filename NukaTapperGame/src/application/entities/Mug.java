@@ -14,13 +14,16 @@ public class Mug extends Entity {
 		setPositionY(actualBar.getPositionY() - 20);
 		
 		startPosX = getPositionX();
-		endPosX = actualBar.getEndPointInX();
+		endPosX = actualBar.getEndPointInX() - getWidth();
 		
-		setVelocity(1, 0);
+		setVelocity(150, 0);
 		
 	}
 	
-	
+	public boolean isMugInTheEndOfBar() {
+		
+		return getPositionX() >= endPosX;
+	}
 
 
 

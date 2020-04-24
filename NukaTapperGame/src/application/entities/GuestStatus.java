@@ -5,5 +5,6 @@ public enum GuestStatus {
 	LEAVE,
 	EXIT,
 	DISTURBED,
-	ANGRY
+	ANGRY,
+	WAIT
 }

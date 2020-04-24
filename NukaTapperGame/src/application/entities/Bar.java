@@ -7,14 +7,14 @@ public class Bar extends Entity{
 	public Bar(int width, int height, int posX, int posY){
 		super(width, height, posX, posY);
 		
-		endPointInX = getEndPointInX(posX, width);
+		endPointInX = calculateEndPointInX(posX, width);
 	}
 
 	public int getEndPointInX() {
 		return endPointInX;
 	}
 
-	private int getEndPointInX(int posX, int width) {
+	private int calculateEndPointInX(int posX, int width) {
 		
 		return posX + width;
 	}

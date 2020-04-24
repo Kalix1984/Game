@@ -8,14 +8,6 @@ public class Player extends Entity {
 	private int life;
 	private int score;
 	
-	public Player() {
-		super();
-		life = 4;
-		actualBar = OnBar.BAR4;
-		level = Level.LEVEL1;
-		score = 0;
-	}
-	
 	public Player(double width, double height, double posX, double posY) {
 		super(width, height, posX, posY);
 		life = 4;
@@ -36,43 +28,45 @@ public class Player extends Entity {
 		return this.actualBar;
 	}
 
-	private void setPlayerPosY(OnBar playerPos) {
+	private void setActualBar(OnBar playerPos) {
 		this.actualBar = playerPos;
 	}
 	
-	public boolean changePlayerPosUp() {
+	public boolean changeBarUp() {
 		
 		switch (actualBar) {
 		case BAR4:
-			setPlayerPosY(actualBar.BAR3);
+			setActualBar(actualBar.BAR3);
 			break;
 		case BAR3:
-			setPlayerPosY(actualBar.BAR2);
+			setActualBar(actualBar.BAR2);
 			break;
 		case BAR2:
-			setPlayerPosY(actualBar.BAR1);
+			setActualBar(actualBar.BAR1);
 			break;
 		case BAR1:
-			return false;
+			setActualBar(actualBar.BAR4);
+			break;
 		}
 		
 		return true;
 	}
 	
-	public boolean changePlayerPosDown() {
+	public boolean changeBarDown() {
 		
 		switch (actualBar) {
 		case BAR1:
-			setPlayerPosY(actualBar.BAR2);
+			setActualBar(actualBar.BAR2);
 			break;
 		case BAR2:
-			setPlayerPosY(actualBar.BAR3);
+			setActualBar(actualBar.BAR3);
 			break;
 		case BAR3:
-			setPlayerPosY(actualBar.BAR4);
+			setActualBar(actualBar.BAR4);
 			break;
 		case BAR4:
-			return false;
+			setActualBar(actualBar.BAR1);
+			break;
 		}
 		
 		return true;

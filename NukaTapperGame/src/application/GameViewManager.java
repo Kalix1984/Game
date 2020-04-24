@@ -1,15 +1,18 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.Guest;
+import application.entities.GuestStatus;
 import application.entities.Mug;
 import application.entities.OSD;
 import application.entities.Player;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +23,7 @@ import javafx.stage.Stage;
 
 public class GameViewManager {
 	AnimationTimer timer;
+	private long lastNanoTime;
 
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
@@ -37,12 +41,11 @@ public class GameViewManager {
 	private boolean isSpaceKeyReleased;
 
 	private Player player;
-	private List<Guest> guests = new ArrayList<>();
-
-	private Guest guest1;
-//	private Guest guest2;
-//	private Guest guest3;
-//	private Guest guest4;
+	
+	private List<Guest> guestsOnBar1 = new LinkedList<>();
+	private List<Guest> guestsOnBar2 = new LinkedList<>();
+	private List<Guest> guestsOnBar3 = new LinkedList<>();
+	private List<Guest> guestsOnBar4 = new LinkedList<>();
 
 	private Bar bar1;
 	private Bar bar2;
@@ -87,6 +90,8 @@ public class GameViewManager {
 		createGameElements();
 
 		createGameLoop();
+		
+//		System.out.println("gameloop vége");
 
 		gamePane.getChildren().add(canvas);
 
@@ -94,30 +99,37 @@ public class GameViewManager {
 	}
 
 	private void createGameLoop() {
-
+		lastNanoTime = System.nanoTime();
+		
 		timer = new AnimationTimer() {
 
 			@Override
 			public void handle(long currentNanoTime) {
-				// clear gameSpace
-				gameSpace.clearRect(0, 0, 800, 600);
-				gameSpace.setFill(Color.ANTIQUEWHITE);
-				gameSpace.fillRect(0, 0, 800, 600);
+				double elapsedTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0; 
+		        lastNanoTime = currentNanoTime;
+		        
+				clearScreen();
 
 				// update
 				movePlayer();
 				tapBeer();
-				player.update();
-				guest1.update();
-
+				player.update(elapsedTime);
+				
+				
+				updateGuests(guestsOnBar1, elapsedTime);
+				updateGuests(guestsOnBar2, elapsedTime);
+				updateGuests(guestsOnBar3, elapsedTime);
+				updateGuests(guestsOnBar4, elapsedTime);
 
 				// render
-				guest1.setVelocity(-0.5, 0);
-				guest1.renderWithRect(gameSpace, Color.BLUEVIOLET);
+				renderGuests(guestsOnBar1);
+				renderGuests(guestsOnBar2);
+				renderGuests(guestsOnBar3);
+				renderGuests(guestsOnBar4);
+				
+				
+			
 
-				for (Door door : doors) {
-					door.renderWithRect(gameSpace, Color.BLACK);
-				}
 
 				bar1.renderWithRect(gameSpace, Color.BROWN);
 				bar2.renderWithRect(gameSpace, Color.BROWN);
@@ -125,21 +137,61 @@ public class GameViewManager {
 				bar4.renderWithRect(gameSpace, Color.BROWN);
 				
 				//Mug render & update
-				int index = 0;
-				
 				for (Mug mug : mugs) {
 					mug.renderWithRect(gameSpace, Color.AQUAMARINE);
-					mug.update();
 					
-					if (mug.intersects(guest1)) {
-						System.out.println(guest1.getDistanceFromDoor(bar1));
-						mug.setVelocity(0, 0);
-						guest1.setVelocity(10, 0);
-						System.out.println(guest1.getDistanceFromDoor(bar1));
+//					if (mug.isMugInTheEndOfBar()) {
+//						mug.setVelocity(0, 0);
+//					}
+					
+					if (!guestsOnBar1.isEmpty()) {
+						if (mug.intersects(guestsOnBar1.get(0))) {
+							
+							mug.setVelocity(0.5, 0);
+							guestsOnBar1.get(0).setVelocity(0.5, 0);
+							guestsOnBar1.get(0).setStatus(GuestStatus.LEAVE);
+						}
 					}
 					
-//				
-					index++;
+					if (!guestsOnBar2.isEmpty()) {
+						if (mug.intersects(guestsOnBar2.get(0))) {
+							
+							mug.setVelocity(0.5, 0);
+							guestsOnBar2.get(0).setVelocity(0.5, 0);
+							guestsOnBar2.get(0).setStatus(GuestStatus.LEAVE);
+						}
+					}
+					
+					if (!guestsOnBar3.isEmpty()) {
+						if (mug.intersects(guestsOnBar3.get(0))) {
+							
+							mug.setVelocity(0.5, 0);
+							guestsOnBar3.get(0).setVelocity(0.5, 0);
+							guestsOnBar3.get(0).setStatus(GuestStatus.LEAVE);
+						}
+					}
+					
+					if (!guestsOnBar4.isEmpty()) {
+						if (mug.intersects(guestsOnBar4.get(0))) {
+							
+							mug.setVelocity(0.5, 0);
+							guestsOnBar4.get(0).setVelocity(0.5, 0);
+							guestsOnBar4.get(0).setStatus(GuestStatus.LEAVE);
+						}
+					}
+					
+					mug.update(elapsedTime);
+				}
+				
+				for (Guest guest : guestsOnBar1) {
+//					System.out.println(guest.getDistanceFromBarFront());
+					if (guest.getDistanceFromBarFront() <= 0) {
+//						System.out.println("a vendég nem lett kiszolgálva");
+					}
+				}
+				
+				for (Door door : doors) {
+					door.renderWithRect(gameSpace, Color.BLACK);
 				}
 				
 				player.renderWithRect(gameSpace, Color.BLUE);
@@ -150,16 +202,21 @@ public class GameViewManager {
 				life.draw(gameSpace, player.getLife(), Color.RED);
 
 			}
+
 		};
 		timer.start();
+		
+		
+	}
+
+	private void clearScreen() {
+		gameSpace.clearRect(0, 0, 800, 600);
+		gameSpace.setFill(Color.ANTIQUEWHITE);
+		gameSpace.fillRect(0, 0, 800, 600);
 	}
 
 	private void tapBeer() {
 		if (isSpaceKeyReleased && isPlayerAtStartingPos()) {
-//			System.out.println("A játékos a kezdőpozícióban van...csapolhat");
-
-//			double mugY = player.getPositionY()+10;
-//			double mugX = player.getPositionX()+20;
 
 			Bar actualBar = null;
 
@@ -179,7 +236,6 @@ public class GameViewManager {
 
 			}
 
-//			System.out.println(actualBar);
 			mugs.add(new Mug(actualBar));
 
 		}
@@ -196,10 +252,10 @@ public class GameViewManager {
 		player.setVelocity(0, 0);
 
 		if (isLeftKeyPressed && player.getPositionX() > getActualBarXPos()) {
-			player.addVelocity(-3, 0);
+			player.addVelocity(-120, 0);
 
 		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
-			player.addVelocity(+3, 0);
+			player.addVelocity(+120, 0);
 
 		} else if (isPlayerOnAnotherBar) {
 			player.setPositionY(getActualBarYPos());
@@ -274,14 +330,19 @@ public class GameViewManager {
 		bar3 = new Bar(550, 40, 125, 400);
 		bar4 = new Bar(600, 40, 100, 500);
 
-		guest1 = new Guest(bar1);
-
 		doors.add(new Door(bar1));
 		doors.add(new Door(bar2));
 		doors.add(new Door(bar3));
 		doors.add(new Door(bar4));
 
 		player = new Player(40, 80, 50, 460);
+		
+		guestsOnBar1.add(new Guest(bar1));
+		guestsOnBar2.add(new Guest(bar2));
+		guestsOnBar3.add(new Guest(bar3));
+		guestsOnBar4.add(new Guest(bar4));
+		
+		
 
 	}
 
@@ -310,14 +371,13 @@ public class GameViewManager {
 				isRightKeyPressed = false;
 				break;
 			case UP:
-				isPlayerOnAnotherBar = player.changePlayerPosUp();
+				isPlayerOnAnotherBar = player.changeBarUp();
 				break;
 			case DOWN:
-				isPlayerOnAnotherBar = player.changePlayerPosDown();
+				isPlayerOnAnotherBar = player.changeBarDown();
 				break;
 			case SPACE:
 				isSpaceKeyReleased = true;
-//				System.out.println("poharak: " + mugs.size());
 				break;
 			default:
 				break;
@@ -336,4 +396,18 @@ public class GameViewManager {
 
 	}
 
+	private void updateGuests(List<Guest> guestsOnBar, double timer) {
+		for (Guest guest : guestsOnBar) {
+			guest.update(timer);
+			
+		}
+	}
+
+	private void renderGuests(List<Guest> guestsOnBar) {
+		for (Guest guest : guestsOnBar) {
+//			guest.setVelocity(-0.5, 0);
+			guest.renderWithRect(gameSpace, Color.BLUEVIOLET);
+			
+		}
+	}
 }

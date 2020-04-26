@@ -1,4 +1,4 @@
-package application;
+package application.menu;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;

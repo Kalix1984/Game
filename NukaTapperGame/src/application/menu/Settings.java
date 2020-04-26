@@ -1,6 +1,5 @@
 package application.menu;
 
-import application.Panel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;

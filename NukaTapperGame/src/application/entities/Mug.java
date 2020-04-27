@@ -26,7 +26,7 @@ public class Mug extends Entity {
 		startPosX = getPositionX();
 		endPosX = actualBar.getEndPointInX() - getWidth();
 
-		setVelocity(150, 0);
+		setVelocity(150);
 
 	}
 
@@ -38,5 +38,6 @@ public class Mug extends Entity {
 
 		return getPositionX() >= endPosX;
 	}
+
 
 }

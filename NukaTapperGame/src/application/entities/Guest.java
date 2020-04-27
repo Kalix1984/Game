@@ -1,22 +1,20 @@
 package application.entities;
 
-
+//random mozgáshoz Cherno 92. videója
 public class Guest extends Entity {
 	
 	private GuestStatus status;
 	private final Bar barOfGuest;
-	private Timer timer;
 	
 	public Guest(Bar bar) {
 		super(40, 80, 0, 0);
 	
 		setPositionY(bar.getPositionY() - 50);
 		setPositionX(bar.getPositionX() + bar.getWidth());
-		setVelocity(-15, 0);
+		setVelocity(-15);
 		status = GuestStatus.COME;
 		barOfGuest = bar;
 		
-//		timer = new Timer(startTime, delayInSec)
 		
 	}
 	
@@ -39,6 +37,7 @@ public class Guest extends Entity {
 	public void come() {
 		
 	}
+
 	
 
 }

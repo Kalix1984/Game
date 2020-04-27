@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GameViewManager {
-	AnimationTimer timer;
+	AnimationTimer gameLoop;
 	private long lastNanoTime;
 
 	private static final int WIDTH = 800;
@@ -51,7 +51,9 @@ public class GameViewManager {
 	private Bar bar2;
 	private Bar bar3;
 	private Bar bar4;
-
+	
+	
+	//takaró elemek csak
 	private List<Door> doors = new ArrayList<>();
 
 	private OSD score;
@@ -84,14 +86,12 @@ public class GameViewManager {
 		menuStage.hide();
 
 //		backToMainMenu();
-
 //		createBackground();
 
 		createGameElements();
 
 		createGameLoop();
 		
-//		System.out.println("gameloop vége");
 
 		gamePane.getChildren().add(canvas);
 
@@ -101,25 +101,28 @@ public class GameViewManager {
 	private void createGameLoop() {
 		lastNanoTime = System.nanoTime();
 		
-		timer = new AnimationTimer() {
+		gameLoop = new AnimationTimer() {
 
 			@Override
 			public void handle(long currentNanoTime) {
-				double elapsedTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0; 
+				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0; 
 		        lastNanoTime = currentNanoTime;
+		        
+		        System.out.println("FPS: " + 1 / deltaTime);
 		        
 				clearScreen();
 
 				// update
 				movePlayer();
 				tapBeer();
-				player.update(elapsedTime);
+				player.update(deltaTime);
 				
 				
-				updateGuests(guestsOnBar1, elapsedTime);
-				updateGuests(guestsOnBar2, elapsedTime);
-				updateGuests(guestsOnBar3, elapsedTime);
-				updateGuests(guestsOnBar4, elapsedTime);
+				
+				updateGuests(guestsOnBar1, deltaTime);
+				updateGuests(guestsOnBar2, deltaTime);
+				updateGuests(guestsOnBar3, deltaTime);
+				updateGuests(guestsOnBar4, deltaTime);
 
 				// render
 				renderGuests(guestsOnBar1);
@@ -147,8 +150,8 @@ public class GameViewManager {
 					if (!guestsOnBar1.isEmpty()) {
 						if (mug.intersects(guestsOnBar1.get(0))) {
 							
-							mug.setVelocity(0.5, 0);
-							guestsOnBar1.get(0).setVelocity(0.5, 0);
+							mug.setVelocity(0.5);
+							guestsOnBar1.get(0).setVelocity(0.5);
 							guestsOnBar1.get(0).setStatus(GuestStatus.LEAVE);
 						}
 					}
@@ -156,8 +159,8 @@ public class GameViewManager {
 					if (!guestsOnBar2.isEmpty()) {
 						if (mug.intersects(guestsOnBar2.get(0))) {
 							
-							mug.setVelocity(0.5, 0);
-							guestsOnBar2.get(0).setVelocity(0.5, 0);
+							mug.setVelocity(0.5);
+							guestsOnBar2.get(0).setVelocity(0.5);
 							guestsOnBar2.get(0).setStatus(GuestStatus.LEAVE);
 						}
 					}
@@ -165,8 +168,8 @@ public class GameViewManager {
 					if (!guestsOnBar3.isEmpty()) {
 						if (mug.intersects(guestsOnBar3.get(0))) {
 							
-							mug.setVelocity(0.5, 0);
-							guestsOnBar3.get(0).setVelocity(0.5, 0);
+							mug.setVelocity(0.5);
+							guestsOnBar3.get(0).setVelocity(0.5);
 							guestsOnBar3.get(0).setStatus(GuestStatus.LEAVE);
 						}
 					}
@@ -174,13 +177,13 @@ public class GameViewManager {
 					if (!guestsOnBar4.isEmpty()) {
 						if (mug.intersects(guestsOnBar4.get(0))) {
 							
-							mug.setVelocity(0.5, 0);
-							guestsOnBar4.get(0).setVelocity(0.5, 0);
+							mug.setVelocity(0.5);
+							guestsOnBar4.get(0).setVelocity(0.5);
 							guestsOnBar4.get(0).setStatus(GuestStatus.LEAVE);
 						}
 					}
 					
-					mug.update(elapsedTime);
+					mug.update(deltaTime);
 				}
 				
 				for (Guest guest : guestsOnBar1) {
@@ -204,7 +207,7 @@ public class GameViewManager {
 			}
 
 		};
-		timer.start();
+		gameLoop.start();
 		
 		
 	}
@@ -249,13 +252,13 @@ public class GameViewManager {
 	}
 
 	private void movePlayer() {
-		player.setVelocity(0, 0);
+		player.setVelocity(0);
 
 		if (isLeftKeyPressed && player.getPositionX() > getActualBarXPos()) {
-			player.addVelocity(-120, 0);
+			player.addVelocity(-120);
 
 		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
-			player.addVelocity(+120, 0);
+			player.addVelocity(+120);
 
 		} else if (isPlayerOnAnotherBar) {
 			player.setPositionY(getActualBarYPos());

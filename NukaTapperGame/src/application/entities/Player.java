@@ -4,7 +4,10 @@ package application.entities;
 public class Player extends Entity {
 
 	private OnBar actualBar;
-	private Level level;
+	private Direction direction;
+	private LevelName level;
+	
+	private String playerName;
 	private int life;
 	private int score;
 	
@@ -12,7 +15,7 @@ public class Player extends Entity {
 		super(width, height, posX, posY);
 		life = 4;
 		actualBar = OnBar.BAR4;
-		level = Level.LEVEL1;
+		level = LevelName.LEVEL1;
 		score = 0;
 	}
 	
@@ -73,12 +76,12 @@ public class Player extends Entity {
 	}
 
 
-	public Level getLevel() {
+	public LevelName getLevel() {
 		return level;
 	}
 
 
-	public void setLevel(Level level) {
+	public void setLevel(LevelName level) {
 		this.level = level;
 	}
 
@@ -91,5 +94,8 @@ public class Player extends Entity {
 	public void addScore(int plusScore) {
 		this.score += plusScore;
 	}
+
+
+
 
 }

@@ -9,4 +9,6 @@ public class Door extends Entity {
 		setPositionX(bar.getPositionX() + bar.getWidth() + 5);
 	}
 
+
+
 }

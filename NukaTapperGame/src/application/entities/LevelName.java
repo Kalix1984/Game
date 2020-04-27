@@ -1,6 +1,6 @@
 package application.entities;
 
-public enum Level {
+public enum LevelName {
 	LEVEL1,
 	LEVEL2,
 	LEVEL3,

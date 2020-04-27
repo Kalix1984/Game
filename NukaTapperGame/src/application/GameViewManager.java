@@ -236,7 +236,7 @@ public class GameViewManager {
 
 			}
 
-			mugs.add(new Mug(actualBar));
+			mugs.add(new Mug(actualBar, player));
 
 		}
 

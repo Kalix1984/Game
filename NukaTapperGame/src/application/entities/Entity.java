@@ -114,5 +114,8 @@ public abstract class Entity {
 		return s.getBoundary().intersects(this.getBoundary());
 	}
 	
+	public void remove() {
+		//ide jön a gamespace-ről való eltávolítás
+	}
 	
 }

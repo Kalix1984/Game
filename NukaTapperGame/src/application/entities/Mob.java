@@ -1,10 +1,54 @@
 package application.entities;
 
-public interface Mob {
-	//update valószínűleg különbözni fog a játékos és a guest között
-	public void update();
-	//rendereléshez 2 változatot használok....téglalap és kép...de alapvetően minden entitinél ugyan az.
-//	public void render();
+public abstract class Mob extends Entity{
+	private Direction dir;
+	private boolean isMoving = false;
+	private double velocityX;
+
+	public abstract void move();	
+	
+	public void update(double time){
+		
+	}
+	
+	public void render() {
+		
+	}
+	
+	public boolean collision() {
+		return false;
+	}
+	
+	public void setVelocityX(double x) {
+		velocityX = x;
+	}
+
+	public void addVelocityX(double x) {
+		velocityX += x;
+	}
+
+	public double getVelocityX() {
+		return velocityX;
+	}
+
+	public Direction getDir() {
+		return dir;
+	}
+
+	public void setDir(Direction dir) {
+		this.dir = dir;
+	}
+
+	public boolean isMoving() {
+		return isMoving;
+	}
+
+	public void setMoving(boolean isMoving) {
+		this.isMoving = isMoving;
+	}
+	
+	
+	
 	
 
 }

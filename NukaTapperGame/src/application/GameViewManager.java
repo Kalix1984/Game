@@ -11,6 +11,7 @@ import application.entities.GuestStatus;
 import application.entities.Mug;
 import application.entities.OSD;
 import application.entities.Player;
+import application.input.Keyboard;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -34,18 +36,20 @@ public class GameViewManager {
 	private Scene gameScene;
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
+	
+	private Keyboard keyListener;
 
-	private boolean isLeftKeyPressed;
-	private boolean isRightKeyPressed;
-	private boolean isPlayerOnAnotherBar;
-	private boolean isSpaceKeyReleased;
+//	private boolean isLeftKeyPressed;
+//	private boolean isRightKeyPressed;
+//	private boolean isPlayerOnAnotherBar;
+//	private boolean isSpaceKeyReleased;
 
 	private Player player;
 	
-	private List<Guest> guestsOnBar1 = new LinkedList<>();
-	private List<Guest> guestsOnBar2 = new LinkedList<>();
-	private List<Guest> guestsOnBar3 = new LinkedList<>();
-	private List<Guest> guestsOnBar4 = new LinkedList<>();
+//	private List<Guest> guestsOnBar1 = new LinkedList<>();
+//	private List<Guest> guestsOnBar2 = new LinkedList<>();
+//	private List<Guest> guestsOnBar3 = new LinkedList<>();
+//	private List<Guest> guestsOnBar4 = new LinkedList<>();
 
 	private Bar bar1;
 	private Bar bar2;
@@ -64,8 +68,7 @@ public class GameViewManager {
 
 	public GameViewManager() {
 		initGameStage();
-		createKeyListeners();
-
+		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE);
 	}
 
 	private void initGameStage() {
@@ -84,17 +87,9 @@ public class GameViewManager {
 	public void newGame(Stage menuStage) {
 		this.menuStage = menuStage;
 		menuStage.hide();
-
-//		backToMainMenu();
-//		createBackground();
-
 		createGameElements();
-
 		createGameLoop();
-		
-
 		gamePane.getChildren().add(canvas);
-
 		gameStage.show();
 	}
 
@@ -108,27 +103,35 @@ public class GameViewManager {
 				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0; 
 		        lastNanoTime = currentNanoTime;
 		        
-		        System.out.println("FPS: " + 1 / deltaTime);
-		        
 				clearScreen();
 
 				// update
-				movePlayer();
-				tapBeer();
+//				player.update(deltaTime);
+				
+				//Teszt
+//				if (input.isDown()) {
+//					System.out.println("Le");
+//					input.resetDown();
+//				}
+//				
+				
+				
+//				movePlayer();
+//				tapBeer();
 				player.update(deltaTime);
 				
 				
 				
-				updateGuests(guestsOnBar1, deltaTime);
-				updateGuests(guestsOnBar2, deltaTime);
-				updateGuests(guestsOnBar3, deltaTime);
-				updateGuests(guestsOnBar4, deltaTime);
-
-				// render
-				renderGuests(guestsOnBar1);
-				renderGuests(guestsOnBar2);
-				renderGuests(guestsOnBar3);
-				renderGuests(guestsOnBar4);
+//				updateGuests(guestsOnBar1, deltaTime);
+//				updateGuests(guestsOnBar2, deltaTime);
+//				updateGuests(guestsOnBar3, deltaTime);
+//				updateGuests(guestsOnBar4, deltaTime);
+//
+//				// render
+//				renderGuests(guestsOnBar1);
+//				renderGuests(guestsOnBar2);
+//				renderGuests(guestsOnBar3);
+//				renderGuests(guestsOnBar4);
 				
 				
 			
@@ -139,59 +142,59 @@ public class GameViewManager {
 				bar3.renderWithRect(gameSpace, Color.BROWN);
 				bar4.renderWithRect(gameSpace, Color.BROWN);
 				
-				//Mug render & update
-				for (Mug mug : mugs) {
-					mug.renderWithRect(gameSpace, Color.AQUAMARINE);
-					
-//					if (mug.isMugInTheEndOfBar()) {
-//						mug.setVelocity(0, 0);
+//				//Mug render & update
+//				for (Mug mug : mugs) {
+//					mug.renderWithRect(gameSpace, Color.AQUAMARINE);
+//					
+////					if (mug.isMugInTheEndOfBar()) {
+////						mug.setVelocity(0, 0);
+////					}
+//					
+//					if (!guestsOnBar1.isEmpty()) {
+//						if (mug.intersects(guestsOnBar1.get(0))) {
+//							
+//							mug.setVelocity(0.5);
+//							guestsOnBar1.get(0).setVelocity(0.5);
+//							guestsOnBar1.get(0).setStatus(GuestStatus.LEAVE);
+//						}
 //					}
-					
-					if (!guestsOnBar1.isEmpty()) {
-						if (mug.intersects(guestsOnBar1.get(0))) {
-							
-							mug.setVelocity(0.5);
-							guestsOnBar1.get(0).setVelocity(0.5);
-							guestsOnBar1.get(0).setStatus(GuestStatus.LEAVE);
-						}
-					}
-					
-					if (!guestsOnBar2.isEmpty()) {
-						if (mug.intersects(guestsOnBar2.get(0))) {
-							
-							mug.setVelocity(0.5);
-							guestsOnBar2.get(0).setVelocity(0.5);
-							guestsOnBar2.get(0).setStatus(GuestStatus.LEAVE);
-						}
-					}
-					
-					if (!guestsOnBar3.isEmpty()) {
-						if (mug.intersects(guestsOnBar3.get(0))) {
-							
-							mug.setVelocity(0.5);
-							guestsOnBar3.get(0).setVelocity(0.5);
-							guestsOnBar3.get(0).setStatus(GuestStatus.LEAVE);
-						}
-					}
-					
-					if (!guestsOnBar4.isEmpty()) {
-						if (mug.intersects(guestsOnBar4.get(0))) {
-							
-							mug.setVelocity(0.5);
-							guestsOnBar4.get(0).setVelocity(0.5);
-							guestsOnBar4.get(0).setStatus(GuestStatus.LEAVE);
-						}
-					}
-					
-					mug.update(deltaTime);
-				}
-				
-				for (Guest guest : guestsOnBar1) {
-//					System.out.println(guest.getDistanceFromBarFront());
-					if (guest.getDistanceFromBarFront() <= 0) {
-//						System.out.println("a vendég nem lett kiszolgálva");
-					}
-				}
+//					
+//					if (!guestsOnBar2.isEmpty()) {
+//						if (mug.intersects(guestsOnBar2.get(0))) {
+//							
+//							mug.setVelocity(0.5);
+//							guestsOnBar2.get(0).setVelocity(0.5);
+//							guestsOnBar2.get(0).setStatus(GuestStatus.LEAVE);
+//						}
+//					}
+//					
+//					if (!guestsOnBar3.isEmpty()) {
+//						if (mug.intersects(guestsOnBar3.get(0))) {
+//							
+//							mug.setVelocity(0.5);
+//							guestsOnBar3.get(0).setVelocity(0.5);
+//							guestsOnBar3.get(0).setStatus(GuestStatus.LEAVE);
+//						}
+//					}
+//					
+//					if (!guestsOnBar4.isEmpty()) {
+//						if (mug.intersects(guestsOnBar4.get(0))) {
+//							
+//							mug.setVelocity(0.5);
+//							guestsOnBar4.get(0).setVelocity(0.5);
+//							guestsOnBar4.get(0).setStatus(GuestStatus.LEAVE);
+//						}
+//					}
+//					
+//					mug.update(deltaTime);
+//				}
+//				
+//				for (Guest guest : guestsOnBar1) {
+////					System.out.println(guest.getDistanceFromBarFront());
+//					if (guest.getDistanceFromBarFront() <= 0) {
+////						System.out.println("a vendég nem lett kiszolgálva");
+//					}
+//				}
 				
 				for (Door door : doors) {
 					door.renderWithRect(gameSpace, Color.BLACK);
@@ -218,54 +221,54 @@ public class GameViewManager {
 		gameSpace.fillRect(0, 0, 800, 600);
 	}
 
-	private void tapBeer() {
-		if (isSpaceKeyReleased && isPlayerAtStartingPos()) {
-
-			Bar actualBar = null;
-
-			switch (player.getActualBar()) {
-			case BAR1:
-				actualBar = bar1;
-				break;
-			case BAR2:
-				actualBar = bar2;
-				break;
-			case BAR3:
-				actualBar = bar3;
-				break;
-			case BAR4:
-				actualBar = bar4;
-				break;
-
-			}
-
-			mugs.add(new Mug(actualBar, player));
-
-		}
-
-		isSpaceKeyReleased = false;
-	}
+//	private void tapBeer() {
+//		if (isSpaceKeyReleased && isPlayerAtStartingPos()) {
+//
+//			Bar actualBar = null;
+//
+//			switch (player.getActualBar()) {
+//			case BAR1:
+//				actualBar = bar1;
+//				break;
+//			case BAR2:
+//				actualBar = bar2;
+//				break;
+//			case BAR3:
+//				actualBar = bar3;
+//				break;
+//			case BAR4:
+//				actualBar = bar4;
+//				break;
+//
+//			}
+//
+//			mugs.add(new Mug(actualBar, player));
+//
+//		}
+//
+//		isSpaceKeyReleased = false;
+//	}
 
 	private boolean isPlayerAtStartingPos() {
 
 		return player.getPositionX() == getActualBarXPos();
 	}
 
-	private void movePlayer() {
-		player.setVelocity(0);
-
-		if (isLeftKeyPressed && player.getPositionX() > getActualBarXPos()) {
-			player.addVelocity(-120);
-
-		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
-			player.addVelocity(+120);
-
-		} else if (isPlayerOnAnotherBar) {
-			player.setPositionY(getActualBarYPos());
-			player.setPositionX(getActualBarXPos());
-			isPlayerOnAnotherBar = false;
-		}
-	}
+//	private void movePlayer() {
+//		player.setVelocity(0);
+//
+//		if (isLeftKeyPressed && player.getPositionX() > getActualBarXPos()) {
+//			player.addVelocity(-120);
+//
+//		} else if (isRightKeyPressed && (player.getPositionX() + player.getWidth()) < getBarEndPosition()) {
+//			player.addVelocity(+120);
+//
+//		} else if (isPlayerOnAnotherBar) {
+//			player.setPositionY(getActualBarYPos());
+//			player.setPositionX(getActualBarXPos());
+//			isPlayerOnAnotherBar = false;
+//		}
+//	}
 
 	private double getActualBarYPos() {
 
@@ -338,54 +341,19 @@ public class GameViewManager {
 		doors.add(new Door(bar3));
 		doors.add(new Door(bar4));
 
-		player = new Player(40, 80, 50, 460);
+		player = new Player(50, 460, keyListener);
+		player.setWidth(40);
+		player.setHeight(80);
 		
-		guestsOnBar1.add(new Guest(bar1));
-		guestsOnBar2.add(new Guest(bar2));
-		guestsOnBar3.add(new Guest(bar3));
-		guestsOnBar4.add(new Guest(bar4));
+//		player = new Player(40, 80, 50, 460);
+		
+//		guestsOnBar1.add(new Guest(bar1));
+//		guestsOnBar2.add(new Guest(bar2));
+//		guestsOnBar3.add(new Guest(bar3));
+//		guestsOnBar4.add(new Guest(bar4));
 		
 		
 
-	}
-
-	private void createKeyListeners() {
-		gameScene.setOnKeyPressed(e -> {
-
-			switch (e.getCode()) {
-			case LEFT:
-				isLeftKeyPressed = true;
-				break;
-			case RIGHT:
-				isRightKeyPressed = true;
-				break;
-			default:
-				break;
-			}
-		});
-
-		gameScene.setOnKeyReleased(e -> {
-
-			switch (e.getCode()) {
-			case LEFT:
-				isLeftKeyPressed = false;
-				break;
-			case RIGHT:
-				isRightKeyPressed = false;
-				break;
-			case UP:
-				isPlayerOnAnotherBar = player.changeBarUp();
-				break;
-			case DOWN:
-				isPlayerOnAnotherBar = player.changeBarDown();
-				break;
-			case SPACE:
-				isSpaceKeyReleased = true;
-				break;
-			default:
-				break;
-			}
-		});
 	}
 
 	private void backToMainMenu() {

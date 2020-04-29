@@ -1,6 +1,6 @@
 package application.entities;
 
-public class Mug extends Entity {
+public class Mug extends Mob {
 	private final double startPosX;
 	private final double endPosX;
 	private OnBar pos;
@@ -11,7 +11,7 @@ public class Mug extends Entity {
 	
 	//actualBar már nem kell mivel le tudom kérni az owner pozícióját
 	public Mug(Bar actualBar, Entity owner) {
-		super(20, 30, 0, 0);
+		
 
 		if (owner.getClass() == Player.class) {
 			status = MugStatus.FORWARD;
@@ -26,7 +26,7 @@ public class Mug extends Entity {
 		startPosX = getPositionX();
 		endPosX = actualBar.getEndPointInX() - getWidth();
 
-		setVelocity(150);
+	
 
 	}
 
@@ -38,6 +38,14 @@ public class Mug extends Entity {
 
 		return getPositionX() >= endPosX;
 	}
+
+	@Override
+	public void move() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 
 }

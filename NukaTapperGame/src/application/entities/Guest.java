@@ -1,17 +1,17 @@
 package application.entities;
 
 //random mozgáshoz Cherno 92. videója
-public class Guest extends Entity {
+public class Guest extends Mob {
 	
 	private GuestStatus status;
 	private final Bar barOfGuest;
 	
 	public Guest(Bar bar) {
-		super(40, 80, 0, 0);
+	
 	
 		setPositionY(bar.getPositionY() - 50);
 		setPositionX(bar.getPositionX() + bar.getWidth());
-		setVelocity(-15);
+	
 		status = GuestStatus.COME;
 		barOfGuest = bar;
 		
@@ -35,6 +35,13 @@ public class Guest extends Entity {
 	}
 	
 	public void come() {
+		
+	}
+
+
+	@Override
+	public void move() {
+		// TODO Auto-generated method stub
 		
 	}
 

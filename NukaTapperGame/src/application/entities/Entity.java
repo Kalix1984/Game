@@ -8,38 +8,23 @@ import javafx.scene.paint.Color;
 public abstract class Entity {
 	private Image image;
 	
-	private boolean isAlive;
+	private boolean isRemoved;
 
 	private double positionX;
 	private double positionY;
-	private double velocityX;
 	private double width;
 	private double height;
-
-	//render with Image
-	public Entity(double posX, double posY) {
-		this.positionX = posX;
-		this.positionY = posY;
+	
+	public void Remove() {
+		this.isRemoved = true;
 	}
 	
-	//render with rect
-	public Entity(double width, double height, double posX, double posY) {
-		this.width = width;
-		this.height = height;
-		this.positionX = posX;
-		this.positionY = posY;
+	public void Alive() {
+		this.isRemoved = false;
 	}
 	
-	public void setAlive() {
-		this.isAlive = true;
-	}
-	
-	public void setDead() {
-		this.isAlive = false;
-	}
-	
-	public boolean isAlive() {
-		return this.isAlive;
+	public boolean isRemoved() {
+		return this.isRemoved;
 	}
 
 	public void setImage(Image image) {
@@ -53,11 +38,19 @@ public abstract class Entity {
 		setImage(i);
 	}
 
-	public void setPosition(int x, int y) {
+	public void setPosition(double x, double y) {
 		positionX = x;
 		positionY = y;
 	}
 
+	public void setPositionX(double positionX) {
+		this.positionX = positionX;
+	}
+	
+	public void setPositionY(double positionY) {
+		this.positionY = positionY;
+	}
+	
 	public double getPositionX() {
 		return positionX;
 	}
@@ -73,26 +66,13 @@ public abstract class Entity {
 	public double getWidth() {
 		return width;
 	}
-
-	public void setPositionX(double positionX) {
-		this.positionX = positionX;
-	}
-
-	public void setPositionY(double positionY) {
-		this.positionY = positionY;
-	}
-
-	public void setVelocity(double x) {
-		velocityX = x;
-	}
-
-	public void addVelocity(double x) {
-		velocityX += x;
-	}
 	
-	public void update(double time) {
-		positionX += velocityX * time;
-		
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
 	}
 
 	public void renderWithImage(GraphicsContext gc) {
@@ -112,10 +92,6 @@ public abstract class Entity {
 
 	public boolean intersects(Entity s) {
 		return s.getBoundary().intersects(this.getBoundary());
-	}
-	
-	public void remove() {
-		//ide jön a gamespace-ről való eltávolítás
 	}
 	
 }

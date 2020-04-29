@@ -2,10 +2,11 @@ package application.entities;
 
 
 public class Bar extends Entity{
+	private OnBar name;
 	private int endPointInX;
 	
 	public Bar(int width, int height, int posX, int posY){
-		super(width, height, posX, posY);
+		
 		
 		endPointInX = calculateEndPointInX(posX, width);
 	}
@@ -18,5 +19,7 @@ public class Bar extends Entity{
 		
 		return posX + width;
 	}
+
+
 
 }

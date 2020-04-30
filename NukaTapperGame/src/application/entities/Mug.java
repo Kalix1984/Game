@@ -24,7 +24,7 @@ public class Mug extends Mob {
 		setPositionY(actualBar.getPositionY() - 20);
 
 		startPosX = getPositionX();
-		endPosX = actualBar.getEndPointInX() - getWidth();
+		endPosX = actualBar.getEndX() - getWidth();
 
 	
 

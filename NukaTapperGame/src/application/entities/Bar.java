@@ -3,19 +3,25 @@ package application.entities;
 
 public class Bar extends Entity{
 	private OnBar name;
-	private int endPointInX;
+	private double endX;
 	
-	public Bar(int width, int height, int posX, int posY){
-		
-		
-		endPointInX = calculateEndPointInX(posX, width);
+	public Bar(double width, double height, double posX, double posY){
+		setWidth(width);
+		setHeight(height);
+		setPosition(posX, posY);
+		endX = calculateEndX(posX, width);
 	}
 
-	public int getEndPointInX() {
-		return endPointInX;
+	public double getEndX() {
+		return endX;
+	}
+	
+	public double getStarX() {
+		return getPositionX();
+		
 	}
 
-	private int calculateEndPointInX(int posX, int width) {
+	private double calculateEndX(double posX, double width) {
 		
 		return posX + width;
 	}

@@ -27,7 +27,7 @@ public abstract class Entity {
 		return this.isRemoved;
 	}
 
-	public void setImage(Image image) {
+	private void setImage(Image image) {
 		this.image = image;
 		width = (int) image.getWidth();
 		height = (int) image.getHeight();

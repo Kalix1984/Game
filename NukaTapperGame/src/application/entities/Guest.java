@@ -27,7 +27,7 @@ public class Guest extends Mob {
 	}
 	
 	public double getDistanceFromDoor() {
-		return barOfGuest.getEndPointInX() - getPositionX();
+		return barOfGuest.getEndX() - getPositionX();
 	}
 	
 	public double getDistanceFromBarFront() {

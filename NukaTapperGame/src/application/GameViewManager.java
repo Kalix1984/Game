@@ -8,9 +8,11 @@ import application.entities.Bar;
 import application.entities.Door;
 import application.entities.Guest;
 import application.entities.GuestStatus;
+import application.entities.Life;
 import application.entities.Mug;
-import application.entities.OSD;
 import application.entities.Player;
+import application.indicator.Indicator;
+import application.indicator.TextIndicator;
 import application.input.Keyboard;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
@@ -38,12 +40,6 @@ public class GameViewManager {
 	private GraphicsContext gameSpace;
 	
 	private Keyboard keyListener;
-
-//	private boolean isLeftKeyPressed;
-//	private boolean isRightKeyPressed;
-//	private boolean isPlayerOnAnotherBar;
-//	private boolean isSpaceKeyReleased;
-
 	private Player player;
 	
 //	private List<Guest> guestsOnBar1 = new LinkedList<>();
@@ -51,18 +47,16 @@ public class GameViewManager {
 //	private List<Guest> guestsOnBar3 = new LinkedList<>();
 //	private List<Guest> guestsOnBar4 = new LinkedList<>();
 
-	private Bar bar1;
-	private Bar bar2;
-	private Bar bar3;
-	private Bar bar4;
-	
+	private List<Bar> bars = new ArrayList<>();
 	
 	//takaró elemek csak
 	private List<Door> doors = new ArrayList<>();
 
-	private OSD score;
-	private OSD level;
-	private OSD life;
+	private GameStats stats;
+	
+	private TextIndicator score;
+	private TextIndicator level;
+	private Indicator life;
 
 	private List<Mug> mugs = new ArrayList<>();
 
@@ -106,19 +100,11 @@ public class GameViewManager {
 				clearScreen();
 
 				// update
-//				player.update(deltaTime);
-				
-				//Teszt
-//				if (input.isDown()) {
-//					System.out.println("Le");
-//					input.resetDown();
-//				}
-//				
-				
 				
 //				movePlayer();
 //				tapBeer();
 				player.update(deltaTime);
+				score.update();
 				
 				
 				
@@ -126,21 +112,17 @@ public class GameViewManager {
 //				updateGuests(guestsOnBar2, deltaTime);
 //				updateGuests(guestsOnBar3, deltaTime);
 //				updateGuests(guestsOnBar4, deltaTime);
-//
-//				// render
+
+				// render
+				for (Bar bar : bars) {
+					bar.renderWithRect(gameSpace, Color.BROWN);
+				}
+				
+				
 //				renderGuests(guestsOnBar1);
 //				renderGuests(guestsOnBar2);
 //				renderGuests(guestsOnBar3);
 //				renderGuests(guestsOnBar4);
-				
-				
-			
-
-
-				bar1.renderWithRect(gameSpace, Color.BROWN);
-				bar2.renderWithRect(gameSpace, Color.BROWN);
-				bar3.renderWithRect(gameSpace, Color.BROWN);
-				bar4.renderWithRect(gameSpace, Color.BROWN);
 				
 //				//Mug render & update
 //				for (Mug mug : mugs) {
@@ -202,11 +184,14 @@ public class GameViewManager {
 				
 				player.renderWithRect(gameSpace, Color.BLUE);
 				
-				// OSD
-				score.draw(gameSpace, Integer.toString(player.getScore()), Color.BLACK);
-				level.draw(gameSpace, player.getLevel().toString(), Color.BLACK);
-				life.draw(gameSpace, player.getLife(), Color.RED);
-
+				score.setText("" + stats.getScore());
+				score.render(gameSpace);
+				
+				level.setText("Szint: " + stats.getLevel());
+				level.render(gameSpace);
+				
+				
+	
 			}
 
 		};
@@ -249,10 +234,10 @@ public class GameViewManager {
 //		isSpaceKeyReleased = false;
 //	}
 
-	private boolean isPlayerAtStartingPos() {
-
-		return player.getPositionX() == getActualBarXPos();
-	}
+//	private boolean isPlayerAtStartingPos() {
+//
+//		return player.getPositionX() == getActualBarXPos();
+//	}
 
 //	private void movePlayer() {
 //		player.setVelocity(0);
@@ -270,88 +255,81 @@ public class GameViewManager {
 //		}
 //	}
 
-	private double getActualBarYPos() {
+//	private double getActualBarYPos() {
+//
+//		switch (player.getActualBar()) {
+//		case BAR1:
+//			return (bar1.getPositionY() - bar1.getHeight());
+//		case BAR2:
+//			return (bar2.getPositionY() - bar2.getHeight());
+//		case BAR3:
+//			return (bar3.getPositionY() - bar3.getHeight());
+//		case BAR4:
+//			return (bar4.getPositionY() - bar4.getHeight());
+//		}
+//
+//		return 0;
+//	}
 
-		switch (player.getActualBar()) {
-		case BAR1:
-			return (bar1.getPositionY() - bar1.getHeight());
-		case BAR2:
-			return (bar2.getPositionY() - bar2.getHeight());
-		case BAR3:
-			return (bar3.getPositionY() - bar3.getHeight());
-		case BAR4:
-			return (bar4.getPositionY() - bar4.getHeight());
-		}
+//	private double getActualBarXPos() {
+//
+//		double playerStartPointInX = player.getWidth() + 10;
+//
+//		switch (player.getActualBar()) {
+//		case BAR1:
+//			return (bar1.getPositionX() - playerStartPointInX);
+//		case BAR2:
+//			return (bar2.getPositionX() - playerStartPointInX);
+//		case BAR3:
+//			return (bar3.getPositionX() - playerStartPointInX);
+//		case BAR4:
+//			return (bar4.getPositionX() - playerStartPointInX);
+//		}
+//
+//		return 0;
+//	}
 
-		return 0;
-	}
-
-	private double getActualBarXPos() {
-
-		double playerStartPointInX = player.getWidth() + 10;
-
-		switch (player.getActualBar()) {
-		case BAR1:
-			return (bar1.getPositionX() - playerStartPointInX);
-		case BAR2:
-			return (bar2.getPositionX() - playerStartPointInX);
-		case BAR3:
-			return (bar3.getPositionX() - playerStartPointInX);
-		case BAR4:
-			return (bar4.getPositionX() - playerStartPointInX);
-		}
-
-		return 0;
-	}
-
-	private int getBarEndPosition() {
-
-		switch (player.getActualBar()) {
-		case BAR1:
-			return bar1.getEndPointInX();
-		case BAR2:
-			return bar2.getEndPointInX();
-		case BAR3:
-			return bar3.getEndPointInX();
-		case BAR4:
-			return bar4.getEndPointInX();
-		}
-
-		return 0;
-	}
+//	private int getBarEndPosition() {
+//
+//		switch (player.getActualBar()) {
+//		case BAR1:
+//			return bar1.getEndPointInX();
+//		case BAR2:
+//			return bar2.getEndPointInX();
+//		case BAR3:
+//			return bar3.getEndPointInX();
+//		case BAR4:
+//			return bar4.getEndPointInX();
+//		}
+//
+//		return 0;
+//	}
 
 	private void createGameElements() {
+		
+		stats = new GameStats();
+		score = new TextIndicator(100, 50);
+		level = new TextIndicator(700, 50);
+		
 
-		score = new OSD();
-		score.setPos(80, 30);
+		bars.add(new Bar(450, 40, 175, 200));
+		bars.add(new Bar(500, 40, 150, 300));
+		bars.add(new Bar(550, 40, 125, 400));
+		bars.add(new Bar(600, 40, 100, 500));
 
-		level = new OSD();
-		level.setPos(760, 30);
-
-		life = new OSD();
-		life.setPos(10, 40);
-
-		bar1 = new Bar(450, 40, 175, 200);
-		bar2 = new Bar(500, 40, 150, 300);
-		bar3 = new Bar(550, 40, 125, 400);
-		bar4 = new Bar(600, 40, 100, 500);
-
-		doors.add(new Door(bar1));
-		doors.add(new Door(bar2));
-		doors.add(new Door(bar3));
-		doors.add(new Door(bar4));
+//		doors.add(new Door(bar1));
+//		doors.add(new Door(bar2));
+//		doors.add(new Door(bar3));
+//		doors.add(new Door(bar4));
 
 		player = new Player(50, 460, keyListener);
 		player.setWidth(40);
 		player.setHeight(80);
 		
-//		player = new Player(40, 80, 50, 460);
-		
 //		guestsOnBar1.add(new Guest(bar1));
 //		guestsOnBar2.add(new Guest(bar2));
 //		guestsOnBar3.add(new Guest(bar3));
 //		guestsOnBar4.add(new Guest(bar4));
-		
 		
 
 	}

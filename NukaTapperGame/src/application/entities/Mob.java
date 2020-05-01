@@ -5,16 +5,11 @@ public abstract class Mob extends Entity{
 	private boolean isMoving = false;
 	private double velocityX;
 
+	public abstract void setBounds();
 	public abstract void move();	
-	
-	public void update(double time){
+	public abstract void update(double time);		
+//	public abstract void render();
 		
-	}
-	
-	public void render() {
-		
-	}
-	
 	public boolean collision() {
 		return false;
 	}
@@ -22,11 +17,7 @@ public abstract class Mob extends Entity{
 	public void setVelocityX(double x) {
 		velocityX = x;
 	}
-
-	public void addVelocityX(double x) {
-		velocityX += x;
-	}
-
+	
 	public double getVelocityX() {
 		return velocityX;
 	}

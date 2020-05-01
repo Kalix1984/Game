@@ -1,51 +1,67 @@
 package application.entities;
 
+import java.util.List;
+
 public class Mug extends Mob {
-	private final double startPosX;
-	private final double endPosX;
-	private OnBar pos;
+	private OnBar actualBar;
 	private MugStatus status;
-	private boolean isAlive;
-	private Entity owner; // Player / Guest
+	private Mob owner; // Player / Guest
+	private List<Bar> bars;
+	private Boundary bounds;
 
-	
-	//actualBar már nem kell mivel le tudom kérni az owner pozícióját
-	public Mug(Bar actualBar, Entity owner) {
-		
+	public Mug(Mob owner, List<Bar> bars, OnBar actualBar) {
+		this.owner = owner;
+		this.bars = bars;
+		this.actualBar = actualBar;
 
-		if (owner.getClass() == Player.class) {
+		if (owner instanceof Player) {
 			status = MugStatus.FORWARD;
-			setPositionX(actualBar.getPositionX());
-			
-		}else if (owner.getClass() == Guest.class) {
+		} else if (owner instanceof Guest) {
 			status = MugStatus.BACKWARD;
 		}
 
-		setPositionY(actualBar.getPositionY() - 20);
-
-		startPosX = getPositionX();
-		endPosX = actualBar.getEndX() - getWidth();
-
-	
-
-	}
-
-	public void setOwner(Entity owner) {
-		this.owner = owner;
-	}
-
-	public boolean isMugInTheEndOfBar() {
-
-		return getPositionX() >= endPosX;
+		setImage("beer.png");
+		setPosition(owner.getPositionX(), owner.getPositionY() + 0);
+		setBounds(); //Ez nullpointer hibát okoz
 	}
 
 	@Override
 	public void move() {
-		// TODO Auto-generated method stub
+		if (status == MugStatus.FORWARD /*&& bounds.getMaxPos() > getPositionX()*/) {
+			setVelocityX(200);
+		}else {
+			setVelocityX(0);
+			
+		}
+	}
+
+	@Override
+	public void setBounds() {
+		
+		int index = 0;
+		switch (actualBar) {
+		case BAR1:
+			index = 0;
+			break;
+		case BAR2:
+			index = 1;
+			break;
+		case BAR3:
+			index = 2;
+			break;
+		case BAR4:
+			index = 3;
+			break;
+
+		}
+		bounds.setBounds(bars.get(index).getStarX(), bars.get(index).getEndX() - 30);
 		
 	}
 
-
-
+	@Override
+	public void update(double time) {
+		move();
+		setPositionX(getPositionX() + getVelocityX() * time);
+	}
 
 }

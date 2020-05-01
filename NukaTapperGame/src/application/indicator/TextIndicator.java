@@ -1,11 +1,12 @@
 package application.indicator;
 
+import application.entities.Entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-public class TextIndicator extends Indicator{
+public class TextIndicator extends Entity implements Indicator{
 	
 	private String text;
 	private String fontType;
@@ -16,7 +17,10 @@ public class TextIndicator extends Indicator{
 	
 	public TextIndicator(double posX, double posY) {
 		setPosition(posX, posY);
-		//default values
+		setDefaults();
+	}
+
+	private void setDefaults() {
 		text = "nincs";
 		fontType = "Verdana";
 		fontSize = 20;
@@ -24,23 +28,12 @@ public class TextIndicator extends Indicator{
 		align = TextAlignment.RIGHT;
 	}
 	
-	public void setText(String text) {
-		this.text = text;
-	}
-	
-	public void setFontType(String fontType) {
+	public TextIndicator(double posX, double posY, String fontType, int fontSize, Color fontColor, TextAlignment align) {
+		this(posX, posY);
+		
 		this.fontType = fontType;
-	}
-	
-	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;
-	}
-
-	public void setFontColor(Color fontColor) {
 		this.fontColor = fontColor;
-	}
-
-	public void setAlign(TextAlignment align) {
 		this.align = align;
 	}
 
@@ -53,12 +46,17 @@ public class TextIndicator extends Indicator{
 	}
 
 	@Override
-	public void update() {
-	
+	public void update(int newValue) {
+		text = "" + newValue; 
+		
 	}
-	
-	
-	
+
+	@Override
+	public void update(String newValue) {
+		text = newValue;
+		
+	}
+
 	
 
 }

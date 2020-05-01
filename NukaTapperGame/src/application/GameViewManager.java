@@ -1,21 +1,18 @@
 package application;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.Guest;
-import application.entities.GuestStatus;
-import application.entities.Life;
 import application.entities.Mug;
 import application.entities.Player;
 import application.indicator.Indicator;
+import application.indicator.LifeIndicator;
 import application.indicator.TextIndicator;
 import application.input.Keyboard;
 import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -28,7 +25,7 @@ import javafx.stage.Stage;
 public class GameViewManager {
 	AnimationTimer gameLoop;
 	private long lastNanoTime;
-
+	
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 
@@ -54,9 +51,9 @@ public class GameViewManager {
 
 	private GameStats stats;
 	
-	private TextIndicator score;
-	private TextIndicator level;
-	private Indicator life;
+	private Indicator scoreIndicator;
+	private Indicator levelIndicator;
+	private Indicator lifeIndicator;
 
 	private List<Mug> mugs = new ArrayList<>();
 
@@ -104,8 +101,6 @@ public class GameViewManager {
 //				movePlayer();
 //				tapBeer();
 				player.update(deltaTime);
-				score.update();
-				
 				
 				
 //				updateGuests(guestsOnBar1, deltaTime);
@@ -184,11 +179,17 @@ public class GameViewManager {
 				
 				player.renderWithRect(gameSpace, Color.BLUE);
 				
-				score.setText("" + stats.getScore());
-				score.render(gameSpace);
+				scoreIndicator.update("Pont: " + stats.getScore());
+				scoreIndicator.render(gameSpace);
 				
-				level.setText("Szint: " + stats.getLevel());
-				level.render(gameSpace);
+				levelIndicator.update("Szint: " + stats.getLevel());
+				levelIndicator.render(gameSpace);
+				
+				lifeIndicator.update(4);
+				lifeIndicator.render(gameSpace);
+				
+				
+				
 				
 				
 	
@@ -308,14 +309,19 @@ public class GameViewManager {
 	private void createGameElements() {
 		
 		stats = new GameStats();
-		score = new TextIndicator(100, 50);
-		level = new TextIndicator(700, 50);
+		
+		scoreIndicator = new TextIndicator(100, 50);
+		levelIndicator = new TextIndicator(700, 50);
+		lifeIndicator = new LifeIndicator(10, 60, 4);
+		
 		
 
 		bars.add(new Bar(450, 40, 175, 200));
 		bars.add(new Bar(500, 40, 150, 300));
 		bars.add(new Bar(550, 40, 125, 400));
 		bars.add(new Bar(600, 40, 100, 500));
+		
+		
 
 //		doors.add(new Door(bar1));
 //		doors.add(new Door(bar2));
@@ -323,6 +329,7 @@ public class GameViewManager {
 //		doors.add(new Door(bar4));
 
 		player = new Player(50, 460, keyListener);
+		
 		player.setWidth(40);
 		player.setHeight(80);
 		

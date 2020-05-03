@@ -23,16 +23,17 @@ public class Player extends Mob {
 
 		boundary.setBounds(bars.get(3).getStarX() - 60, bars.get(3).getEndX() - 40);
 	}
-
+	
 	public void tapBeer() {
 		if (input.isTap() && canTapBeer()) {
 			mugs.add(new Mug(this, bars, actualBar));
+			System.out.println(mugs.size());
 		}
 		input.resetTap();
 	}
 
 	private boolean canTapBeer() {
-
+		System.out.println("start point");
 		return boundary.getMinPos() == getPositionX();
 	}
 

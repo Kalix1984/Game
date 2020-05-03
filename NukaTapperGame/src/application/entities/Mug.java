@@ -13,6 +13,7 @@ public class Mug extends Mob {
 		this.owner = owner;
 		this.bars = bars;
 		this.actualBar = actualBar;
+		this.bounds = new Boundary();
 
 		if (owner instanceof Player) {
 			status = MugStatus.FORWARD;
@@ -22,22 +23,43 @@ public class Mug extends Mob {
 
 		setImage("beer.png");
 		setPosition(owner.getPositionX(), owner.getPositionY() + 0);
-		setBounds(); //Ez nullpointer hibát okoz
+		setBounds(); 
+	}
+	
+	public MugStatus getStatus() {
+		return status;
+	}
+
+	public boolean isMugBroken() {
+		
+		return status == MugStatus.BREAK_ONWALL || status == MugStatus.BREAK_ONFLOOR;
 	}
 
 	@Override
 	public void move() {
-		if (status == MugStatus.FORWARD /*&& bounds.getMaxPos() > getPositionX()*/) {
+		if (status == MugStatus.FORWARD && bounds.getMaxPos() > getPositionX()) {
 			setVelocityX(200);
-		}else {
+			setMoving(true);
+		}else if(status == MugStatus.BACKWARD && bounds.getMinPos() < getPositionX()) {
+			setVelocityX(-200);
+			setMoving(true);
+		}else if(status == MugStatus.FORWARD && bounds.getMaxPos() <= getPositionX()) {
 			setVelocityX(0);
-			
+			setMoving(false);
+			status = MugStatus.BREAK_ONWALL;
 		}
 	}
 
 	@Override
 	public void setBounds() {
 		
+		int index = getBarIndex();
+	
+		bounds.setBounds(bars.get(index).getStarX(), bars.get(index).getEndX() - 30);
+		
+	}
+
+	private int getBarIndex() {
 		int index = 0;
 		switch (actualBar) {
 		case BAR1:
@@ -52,14 +74,13 @@ public class Mug extends Mob {
 		case BAR4:
 			index = 3;
 			break;
-
 		}
-		bounds.setBounds(bars.get(index).getStarX(), bars.get(index).getEndX() - 30);
-		
+		return index;
 	}
 
 	@Override
 	public void update(double time) {
+		
 		move();
 		setPositionX(getPositionX() + getVelocityX() * time);
 	}

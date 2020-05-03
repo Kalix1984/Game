@@ -13,7 +13,7 @@ public class Mug extends Mob {
 		this.owner = owner;
 		this.bars = bars;
 		this.actualBar = actualBar;
-		this.bounds = new Boundary();
+		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(), bars.get(actualBar.getIndex()).getEndX() - 30);
 
 		if (owner instanceof Player) {
 			status = MugStatus.FORWARD;
@@ -23,7 +23,6 @@ public class Mug extends Mob {
 
 		setImage("beer.png");
 		setPosition(owner.getPositionX(), owner.getPositionY() + 0);
-		setBounds(); 
 	}
 	
 	public MugStatus getStatus() {
@@ -36,7 +35,7 @@ public class Mug extends Mob {
 	}
 
 	@Override
-	public void move() {
+	public void move(double deltaTime) {
 		if (status == MugStatus.FORWARD && bounds.getMaxPos() > getPositionX()) {
 			setVelocityX(200);
 			setMoving(true);
@@ -48,41 +47,12 @@ public class Mug extends Mob {
 			setMoving(false);
 			status = MugStatus.BREAK_ONWALL;
 		}
+		
+		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 
 	@Override
-	public void setBounds() {
-		
-		int index = getBarIndex();
-	
-		bounds.setBounds(bars.get(index).getStarX(), bars.get(index).getEndX() - 30);
-		
+	public void update(double deltaTime) {
+		move(deltaTime);
 	}
-
-	private int getBarIndex() {
-		int index = 0;
-		switch (actualBar) {
-		case BAR1:
-			index = 0;
-			break;
-		case BAR2:
-			index = 1;
-			break;
-		case BAR3:
-			index = 2;
-			break;
-		case BAR4:
-			index = 3;
-			break;
-		}
-		return index;
-	}
-
-	@Override
-	public void update(double time) {
-		
-		move();
-		setPositionX(getPositionX() + getVelocityX() * time);
-	}
-
 }

@@ -6,8 +6,10 @@ import java.util.List;
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.Guest;
+import application.entities.GuestStatus;
 import application.entities.Mob;
 import application.entities.Mug;
+import application.entities.OnBar;
 import application.entities.Player;
 import application.indicator.Indicator;
 import application.indicator.LifeIndicator;
@@ -42,10 +44,8 @@ public class GameViewManager {
 	private Keyboard keyListener;
 	private Player player;
 
-//	private List<Guest> guestsOnBar1 = new LinkedList<>();
-//	private List<Guest> guestsOnBar2 = new LinkedList<>();
-//	private List<Guest> guestsOnBar3 = new LinkedList<>();
-//	private List<Guest> guestsOnBar4 = new LinkedList<>();
+	
+	public List<Guest> guests = new ArrayList<>();
 
 	// takaró elemek csak
 	private List<Door> doors = new ArrayList<>();
@@ -99,6 +99,13 @@ public class GameViewManager {
 
 				player.tapBeer();
 				player.update(deltaTime);
+				
+				
+				
+				for (Guest guest : guests) {
+					guest.update(deltaTime);
+					guest.renderWithRect(gameSpace, Color.GREEN);
+				}
 
 				for (Bar bar : bars) {
 					bar.renderWithRect(gameSpace, Color.BROWN);
@@ -109,13 +116,27 @@ public class GameViewManager {
 
 					if (stats.getLife() > 0) {
 						stats.looseLife();
-
 						if (stats.getLife() == 0) {
 							System.out.println("GAME OVER");
 							gameLoop.stop();
 						}
 					}
 				}
+				
+				if (isAngryGuestInTheList()) {
+					guests.clear();
+					
+					if (stats.getLife() > 0) {
+						stats.looseLife();
+						
+						if (stats.getLife() == 0) {
+							System.out.println("GAME OVER");
+							gameLoop.stop();
+						}
+					}
+				}
+				
+				
 
 				for (Mug mug : mugs) {
 					mug.update(deltaTime);
@@ -139,11 +160,21 @@ public class GameViewManager {
 
 			}
 
+
 		};
 		gameLoop.start();
 
 	}
 
+	private boolean isAngryGuestInTheList() {
+		for (Guest guest: guests) {
+			if (guest.getStatus() == GuestStatus.ANGRY) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private boolean isBrokenMugInTheList() {
 		for (Mug mug : mugs) {
 			if (mug.isMugBroken()) {
@@ -181,12 +212,12 @@ public class GameViewManager {
 
 		player.setWidth(40);
 		player.setHeight(80);
-
-//		guestsOnBar1.add(new Guest(bar1));
-//		guestsOnBar2.add(new Guest(bar2));
-//		guestsOnBar3.add(new Guest(bar3));
-//		guestsOnBar4.add(new Guest(bar4));
-
+		
+		guests.add(new Guest(OnBar.BAR4, bars));
+		guests.add(new Guest(OnBar.BAR3, bars));
+		guests.add(new Guest(OnBar.BAR2, bars));
+		guests.add(new Guest(OnBar.BAR1, bars));
+		
 	}
 
 	private void backToMainMenu() {

@@ -1,11 +1,10 @@
 package application.entities;
 
-
-public class Bar extends Entity{
-	private OnBar name;
+public class Bar extends Entity {
+//	private OnBar name;
 	private double endX;
-	
-	public Bar(double width, double height, double posX, double posY){
+
+	public Bar(double width, double height, double posX, double posY) {
 		setWidth(width);
 		setHeight(height);
 		setPosition(posX, posY);
@@ -15,17 +14,13 @@ public class Bar extends Entity{
 	public double getEndX() {
 		return endX;
 	}
-	
+
 	public double getStarX() {
 		return getPositionX();
-		
 	}
 
 	private double calculateEndX(double posX, double width) {
-		
 		return posX + width;
 	}
-
-
 
 }

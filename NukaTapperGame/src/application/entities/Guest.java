@@ -1,23 +1,35 @@
 package application.entities;
 
-//random mozgáshoz Cherno 92. videója
+import java.util.List;
+
+import application.RandomGenerator;
+
 public class Guest extends Mob {
-	
+
+	private Boundary boundary;
 	private GuestStatus status;
-	private final Bar barOfGuest;
-	
-	public Guest(Bar bar) {
-	
-	
-		setPositionY(bar.getPositionY() - 50);
-		setPositionX(bar.getPositionX() + bar.getWidth());
-	
+	private final OnBar actualBar;
+	private final RandomGenerator random;
+	private double speed;
+	private double distanceToTravel;
+	private long delay = 1_000_000_000 * 10;
+	private long timeToReach;
+
+	public Guest(OnBar actualBar, List<Bar> bars) {
+		random = new RandomGenerator();
 		status = GuestStatus.COME;
-		barOfGuest = bar;
-		
-		
+		this.actualBar = actualBar;
+
+		setWidth(40);
+		setHeight(80);
+
+		setPositionX(bars.get(actualBar.getIndex()).getEndX() + 5);
+		setPositionY(bars.get(actualBar.getIndex()).getPositionY() - 50);
+
+		boundary = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
+				bars.get(actualBar.getIndex()).getEndX() + 55);
 	}
-	
+
 	public GuestStatus getStatus() {
 		return status;
 	}
@@ -25,26 +37,47 @@ public class Guest extends Mob {
 	public void setStatus(GuestStatus status) {
 		this.status = status;
 	}
-	
-	public double getDistanceFromDoor() {
-		return barOfGuest.getEndX() - getPositionX();
-	}
-	
-	public double getDistanceFromBarFront() {
-		return barOfGuest.getPositionX() - this.getPositionX();
-	}
-	
-	public void come() {
-		
-	}
-
 
 	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
+	public void move(double deltaTime) {
+		if (status == GuestStatus.WAIT) {
+			setVelocityX(0);
+			if (System.nanoTime() >= timeToReach) {
+				status = GuestStatus.COME;
+			}
+		}
+
+		if (status == GuestStatus.COME && distanceToTravel > 0 && getPositionX() > boundary.getMinPos()) {
+			setVelocityX(-30);
+			distanceToTravel += getVelocityX() * deltaTime;
+
+		} else if (status == GuestStatus.COME && getPositionX() <= boundary.getMinPos()) {
+			setVelocityX(0);
+			status = GuestStatus.ANGRY;
+		}
+
+		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 
-	
+	@Override
+	public void update(double deltaTime) {
+		if (distanceToTravel < 1.0) {
+			generateRandomDistance(30, 80);
+
+			setTimeUntilWait();
+			status = GuestStatus.WAIT;
+		}
+
+		move(deltaTime);
+
+	}
+
+	private void setTimeUntilWait() {
+		timeToReach = System.nanoTime() + delay;
+	}
+
+	private void generateRandomDistance(int min, int max) {
+		distanceToTravel = random.generateInt(min, max);
+	}
 
 }

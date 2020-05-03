@@ -13,56 +13,41 @@ public class Player extends Mob {
 
 	public Player(double posX, double posY, Keyboard input, List<Bar> bars, List<Mug> mugs) {
 
-		this.setPosition(posX, posY);
+		setPosition(posX, posY);
 		this.input = input;
 
 		actualBar = OnBar.BAR4;
 		this.bars = bars;
 		this.mugs = mugs;
-		boundary = new Boundary();
-
-		boundary.setBounds(bars.get(3).getStarX() - 60, bars.get(3).getEndX() - 40);
+		boundary = new Boundary(bars.get(actualBar.getIndex()).getStarX() - 60,
+				bars.get(actualBar.getIndex()).getEndX() - 40);
 	}
-	
+
 	public void tapBeer() {
 		if (input.isTap() && canTapBeer()) {
 			mugs.add(new Mug(this, bars, actualBar));
-			System.out.println(mugs.size());
 		}
 		input.resetTap();
 	}
 
 	private boolean canTapBeer() {
-		System.out.println("start point");
+
 		return boundary.getMinPos() == getPositionX();
 	}
 
 	@Override
-	public void move() {
+	public void move(double deltaTime) {
 		moveHorizontal();
 		if (changeActualBar()) {
 			moveVertical();
 			setBounds();
 		}
+		
+		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 
 	private void moveVertical() {
-		switch (actualBar) {
-		case BAR1:
-
-			setPosition(bars.get(0).getStarX() - 60, bars.get(0).getPositionY() - 40);
-			break;
-		case BAR2:
-			setPosition(bars.get(1).getStarX() - 60, bars.get(1).getPositionY() - 40);
-			break;
-		case BAR3:
-			setPosition(bars.get(2).getStarX() - 60, bars.get(2).getPositionY() - 40);
-			break;
-		case BAR4:
-			setPosition(bars.get(3).getStarX() - 60, bars.get(3).getPositionY() - 40);
-			break;
-		}
-
+		setPosition(bars.get(actualBar.getIndex()).getStarX() - 60, bars.get(actualBar.getIndex()).getPositionY() - 40);
 	}
 
 	private boolean changeActualBar() {
@@ -124,39 +109,23 @@ public class Player extends Mob {
 	}
 
 	@Override
-	public void update(double time) {
-		move();
-		setPositionX(getPositionX() + getVelocityX() * time);
+	public void update(double deltaTime) {
+		move(deltaTime);
+		
 	}
 
 
-	@Override
 	public void setBounds() {
-		int index = 0;
-		switch (actualBar) {
-		case BAR1:
-			index = 0;
-			break;
-		case BAR2:
-			index = 1;
-			break;
-		case BAR3:
-			index = 2;
-			break;
-		case BAR4:
-			index = 3;
-			break;
-
-		}
-		boundary.setBounds(bars.get(index).getStarX() - 60, bars.get(index).getEndX() - 40);
+		boundary.setBounds(bars.get(actualBar.getIndex()).getStarX() - 60,
+				bars.get(actualBar.getIndex()).getEndX() - 40);
 	}
 
 	private boolean canMoveLeft() {
-		return getPositionX() > boundary.getMinPos();
+		return getPositionX() >= boundary.getMinPos();
 	}
 
 	private boolean canMoveRight() {
-		return getPositionX() < boundary.getMaxPos();
+		return getPositionX() <= boundary.getMaxPos();
 	}
 
 }

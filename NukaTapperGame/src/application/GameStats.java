@@ -6,12 +6,10 @@ public class GameStats {
 	private int score;
 	private int level;
 	
-	
 	public GameStats() {
 		playerName = "ismeretlen";
 		life = 4;
-		level = 0;
-
+		level = 1;
 	}
 	
 	public int getLife() {

@@ -5,5 +5,4 @@ public enum MugStatus {
 	BACKWARD, 
 	BREAK_ONWALL,
 	BREAK_ONFLOOR,
-	
 }

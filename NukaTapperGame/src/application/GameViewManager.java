@@ -11,10 +11,15 @@ import application.entities.Mob;
 import application.entities.Mug;
 import application.entities.OnBar;
 import application.entities.Player;
+import application.gamepanel.GamePanel;
+import application.gamepanel.MessageGamePanel;
+import application.gamestate.GameState;
+import application.gamestate.GameStateManager;
 import application.indicator.Indicator;
 import application.indicator.LifeIndicator;
 import application.indicator.TextIndicator;
 import application.input.Keyboard;
+import application.menu.Panel;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -51,7 +56,7 @@ public class GameViewManager {
 	// takaró elemek csak
 	private List<Door> doors = new ArrayList<>();
 
-//	private GameStats stats;
+	private GamePanel gamePanel;
 
 	private Indicator scoreIndicator;
 	private Indicator levelIndicator;
@@ -61,7 +66,8 @@ public class GameViewManager {
 
 	public GameViewManager() {
 		initGameStage();
-		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE);
+		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE,
+				KeyCode.ENTER);
 		gameStateManager = new GameStateManager(mugs, guests);
 	}
 
@@ -102,13 +108,45 @@ public class GameViewManager {
 				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0;
 				lastNanoTime = currentNanoTime;
 
-				if (gameStateManager.getGameState() == GameState.STARTLEVEL) {
-					System.out.println("start");
-				} else {
+				// clear
+				clearScreen();
 
-					// clear
-					clearScreen();
+				switch (gameStateManager.getGameState()) {
+				case START_LEVEL:
+					// update
 
+					scoreIndicator.update("Pont: " + gameStateManager.getGameStats().getScore());
+					levelIndicator.update("Szint: " + gameStateManager.getGameStats().getLevel());
+					lifeIndicator.update(gameStateManager.getGameStats().getLife());
+
+					// render
+
+					for (Bar bar : bars) {
+						bar.renderWithRect(gameSpace, Color.BROWN);
+					}
+
+					for (Mug mug : mugs) {
+						mug.renderWithImage(gameSpace);
+					}
+
+					for (Door door : doors) {
+						door.renderWithRect(gameSpace, Color.BLACK);
+					}
+
+					player.renderWithRect(gameSpace, Color.BLUE);
+
+					scoreIndicator.render(gameSpace);
+					levelIndicator.render(gameSpace);
+					lifeIndicator.render(gameSpace);
+
+					gamePanel.render(gameSpace, "Kezdéshez nyomj ENTER-t");
+
+					if (gamePanel.isExitKeyPressed()) {
+						gameStateManager.changeGameState(GameState.RUNNING);
+					}
+
+					break;
+				case RUNNING:
 					// update
 					player.update(deltaTime);
 
@@ -147,10 +185,50 @@ public class GameViewManager {
 					levelIndicator.render(gameSpace);
 					lifeIndicator.render(gameSpace);
 
+					gameStateManager.changeGameState(gameStateManager.check());
+
+					break;
+				case LOSE_LIFE:
+					scoreIndicator.update("Pont: " + gameStateManager.getGameStats().getScore());
+					levelIndicator.update("Szint: " + gameStateManager.getGameStats().getLevel());
+					lifeIndicator.update(gameStateManager.getGameStats().getLife());
+
+					// render
+
+					for (Bar bar : bars) {
+						bar.renderWithRect(gameSpace, Color.BROWN);
+					}
+
+					for (Mug mug : mugs) {
+						mug.renderWithImage(gameSpace);
+					}
+
+					for (Door door : doors) {
+						door.renderWithRect(gameSpace, Color.BLACK);
+					}
+
+					player.renderWithRect(gameSpace, Color.BLUE);
+
+					scoreIndicator.render(gameSpace);
+					levelIndicator.render(gameSpace);
+					lifeIndicator.render(gameSpace);
+
+					gamePanel.render(gameSpace, "Életet vesztettél, nyomj ENTER-t");
+
+					if (gamePanel.isExitKeyPressed()) {
+						gameStateManager.getGameStats().looseLife();
+						gameStateManager.restartLevel();
+						gameStateManager.changeGameState(GameState.RUNNING);
+					}
+					break;
+				case GAME_OVER:
+
+					break;
+				case WIN:
+
+					break;
 				}
-
 			}
-
 		};
 		gameLoop.start();
 
@@ -158,15 +236,14 @@ public class GameViewManager {
 
 	private void clearScreen() {
 		gameSpace.clearRect(0, 0, 800, 600);
-		gameSpace.setFill(Color.ANTIQUEWHITE);
-		gameSpace.fillRect(0, 0, 800, 600);
+//		gameSpace.setFill(Color.ANTIQUEWHITE);
+//		gameSpace.fillRect(0, 0, 800, 600);
 	}
 
 	private void createGameElements() {
-//		stats = new GameStats();
 
-		scoreIndicator = new TextIndicator(100, 50);
-		levelIndicator = new TextIndicator(700, 50);
+		scoreIndicator = new TextIndicator(20, 50);
+		levelIndicator = new TextIndicator(680, 50);
 		lifeIndicator = new LifeIndicator(10, 60, 4);
 
 		bars.add(new Bar(450, 40, 175, 200));
@@ -188,6 +265,8 @@ public class GameViewManager {
 		guests.add(new Guest(OnBar.BAR3, bars, 30));
 		guests.add(new Guest(OnBar.BAR2, bars, 30));
 		guests.add(new Guest(OnBar.BAR1, bars, 30));
+
+		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
 
 	}
 

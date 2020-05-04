@@ -11,20 +11,23 @@ public class Keyboard {
 	private boolean isUp;
 	private boolean isDown;
 	private boolean isTap;
+	private boolean isStart;
 
 	private final KeyCode leftKey;
 	private final KeyCode rightKey;
 	private final KeyCode upKey;
 	private final KeyCode downKey;
 	private final KeyCode tapKey;
+	private final KeyCode startKey;
 
-	public Keyboard(Scene scene, KeyCode leftKey, KeyCode rightKey, KeyCode upKey, KeyCode downKey, KeyCode tapKey) {
+	public Keyboard(Scene scene, KeyCode leftKey, KeyCode rightKey, KeyCode upKey, KeyCode downKey, KeyCode tapKey, KeyCode startKey) {
 		this.scene = scene;
 		this.leftKey = leftKey;
 		this.rightKey = rightKey;
 		this.upKey = upKey;
 		this.downKey = downKey;
 		this.tapKey = tapKey;
+		this.startKey = startKey;
 
 		createKeyListeners();
 	}
@@ -61,13 +64,18 @@ public class Keyboard {
 		this.isTap = false;
 	}
 
+	public boolean isStart() {
+		return isStart;
+	}
+
 	private void createKeyListeners() {
 		scene.setOnKeyPressed(e -> {
-
 			if (e.getCode() == leftKey) {
 				isLeft = true;
 			} else if (e.getCode() == rightKey) {
 				isRight = true;
+			} else if (e.getCode() == startKey) {
+				isStart = true;
 			}
 		});
 
@@ -83,6 +91,8 @@ public class Keyboard {
 				isDown = true;
 			} else if (e.getCode() == tapKey) {
 				isTap = true;
+			} else if (e.getCode() == startKey) {
+				isStart = false;
 			}
 		});
 	}

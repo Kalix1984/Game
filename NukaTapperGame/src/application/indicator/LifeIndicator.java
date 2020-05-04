@@ -17,7 +17,6 @@ public class LifeIndicator extends Entity implements Indicator {
 		for (int i = 0; i < lifes; i++) {
 			lifeSymbols.add(new LifeSymbol(posX + i * 35, posY));
 		}
-
 	}
 
 	@Override

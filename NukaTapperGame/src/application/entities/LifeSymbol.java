@@ -6,6 +6,4 @@ public class LifeSymbol extends Entity{
 		setPosition(posX, posY);
 		setImage("life.png");
 	}
-	
-	
 }

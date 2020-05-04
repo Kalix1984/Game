@@ -30,7 +30,6 @@ public class Mug extends Mob {
 	}
 
 	public boolean isMugBroken() {
-		
 		return status == MugStatus.BREAK_ONWALL || status == MugStatus.BREAK_ONFLOOR;
 	}
 

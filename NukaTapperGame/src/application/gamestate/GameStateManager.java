@@ -1,7 +1,8 @@
-package application;
+package application.gamestate;
 
 import java.util.List;
 
+import application.GameStats;
 import application.entities.Guest;
 import application.entities.GuestStatus;
 import application.entities.Mug;
@@ -11,16 +12,12 @@ public class GameStateManager {
 	private List<Guest> guests;
 	private GameState gameState;
 	private GameStats gameStats; 
-//	RUNNING,
-//	WIN,
-//	GAMEOVER,
-//	LOOSELIFE	
+	
 	public GameStateManager(List<Mug> mugs, List<Guest> guests) {
 		this.mugs = mugs;
 		this.guests = guests;
 		this.gameStats = new GameStats();
-		this.gameState = GameState.STARTLEVEL;
-		
+		this.gameState = GameState.START_LEVEL;
 	}
 
 	public GameState getGameState() {
@@ -31,8 +28,27 @@ public class GameStateManager {
 		return gameStats;
 	}
 	
-	public void checkGameState() {
+	public void changeGameState(GameState newState) {
+		this.gameState = newState;
+	}
+	
+	public GameState check() {
+		if (isBrokenMugInTheList() || isAngryGuestInTheList() && !isGameOver()) {
+			return GameState.LOSE_LIFE;
+		}else if (isGameOver()) {
+			return GameState.GAME_OVER;
+		}
 		
+		return GameState.RUNNING;
+	}
+	
+	private boolean isGameOver() {
+		return gameStats.getLife() == 0;
+	}
+	
+	public void restartLevel() {
+		guests.clear();
+		mugs.clear();
 	}
 	
 	private boolean isBrokenMugInTheList() {
@@ -43,6 +59,7 @@ public class GameStateManager {
 		}
 		return false;
 	}
+	
 	
 	private boolean isAngryGuestInTheList() {
 		for (Guest guest: guests) {

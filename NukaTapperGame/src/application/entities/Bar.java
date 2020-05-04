@@ -1,7 +1,6 @@
 package application.entities;
 
 public class Bar extends Entity {
-//	private OnBar name;
 	private double endX;
 
 	public Bar(double width, double height, double posX, double posY) {

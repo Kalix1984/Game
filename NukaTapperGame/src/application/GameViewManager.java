@@ -38,6 +38,8 @@ public class GameViewManager {
 	private Scene gameScene;
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
+	
+	public GameState stateOfTheGame;  
 
 	public List<Bar> bars = new ArrayList<>();
 
@@ -191,8 +193,8 @@ public class GameViewManager {
 	}
 
 	private void createGameElements() {
-
 		stats = new GameStats();
+		stateOfTheGame = GameState.RUNNING;
 
 		scoreIndicator = new TextIndicator(100, 50);
 		levelIndicator = new TextIndicator(700, 50);
@@ -213,10 +215,10 @@ public class GameViewManager {
 		player.setWidth(40);
 		player.setHeight(80);
 		
-		guests.add(new Guest(OnBar.BAR4, bars));
-		guests.add(new Guest(OnBar.BAR3, bars));
-		guests.add(new Guest(OnBar.BAR2, bars));
-		guests.add(new Guest(OnBar.BAR1, bars));
+		guests.add(new Guest(OnBar.BAR4, bars, 30));
+		guests.add(new Guest(OnBar.BAR3, bars, 30));
+		guests.add(new Guest(OnBar.BAR2, bars, 30));
+		guests.add(new Guest(OnBar.BAR1, bars, 30));
 		
 	}
 

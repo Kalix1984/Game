@@ -11,12 +11,13 @@ public class Guest extends Mob {
 	private final OnBar actualBar;
 	private final RandomGenerator random;
 	private double speed;
-	private double distanceToTravel;
+	private double distanceToMove;
 	private long delay = 1_000_000_000 * 10;
 	private long timeToReach;
 
-	public Guest(OnBar actualBar, List<Bar> bars) {
+	public Guest(OnBar actualBar, List<Bar> bars, double speed) {
 		random = new RandomGenerator();
+		this.speed = speed;		
 		status = GuestStatus.COME;
 		this.actualBar = actualBar;
 
@@ -41,18 +42,18 @@ public class Guest extends Mob {
 	@Override
 	public void move(double deltaTime) {
 		if (status == GuestStatus.WAIT) {
-			setVelocityX(0);
+			setVelocityX(0 * speed);
 			if (System.nanoTime() >= timeToReach) {
 				status = GuestStatus.COME;
 			}
 		}
 
-		if (status == GuestStatus.COME && distanceToTravel > 0 && getPositionX() > boundary.getMinPos()) {
-			setVelocityX(-30);
-			distanceToTravel += getVelocityX() * deltaTime;
+		if (status == GuestStatus.COME && distanceToMove > 0 && getPositionX() > boundary.getMinPos()) {
+			setVelocityX(-1 * speed);
+			distanceToMove += getVelocityX() * deltaTime;
 
 		} else if (status == GuestStatus.COME && getPositionX() <= boundary.getMinPos()) {
-			setVelocityX(0);
+			setVelocityX(0 * speed);
 			status = GuestStatus.ANGRY;
 		}
 
@@ -61,7 +62,7 @@ public class Guest extends Mob {
 
 	@Override
 	public void update(double deltaTime) {
-		if (distanceToTravel < 1.0) {
+		if (distanceToMove < 1.0) {
 			generateRandomDistance(30, 80);
 
 			setTimeUntilWait();
@@ -77,7 +78,7 @@ public class Guest extends Mob {
 	}
 
 	private void generateRandomDistance(int min, int max) {
-		distanceToTravel = random.generateInt(min, max);
+		distanceToMove = random.generateInt(min, max);
 	}
 
 }

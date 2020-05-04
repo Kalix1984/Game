@@ -38,21 +38,20 @@ public class GameViewManager {
 	private Scene gameScene;
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
-	
-	public GameState stateOfTheGame;  
+
+	private GameStateManager gameStateManager;
 
 	public List<Bar> bars = new ArrayList<>();
 
 	private Keyboard keyListener;
 	private Player player;
 
-	
 	public List<Guest> guests = new ArrayList<>();
 
 	// takaró elemek csak
 	private List<Door> doors = new ArrayList<>();
 
-	private GameStats stats;
+//	private GameStats stats;
 
 	private Indicator scoreIndicator;
 	private Indicator levelIndicator;
@@ -63,6 +62,7 @@ public class GameViewManager {
 	public GameViewManager() {
 		initGameStage();
 		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE);
+		gameStateManager = new GameStateManager(mugs, guests);
 	}
 
 	private void initGameStage() {
@@ -90,6 +90,11 @@ public class GameViewManager {
 	private void createGameLoop() {
 		lastNanoTime = System.nanoTime();
 
+//		RUNNING,
+//		LOOSELIFE
+//		WIN,
+//		GAMEOVER,
+
 		gameLoop = new AnimationTimer() {
 
 			@Override
@@ -97,93 +102,58 @@ public class GameViewManager {
 				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0;
 				lastNanoTime = currentNanoTime;
 
-				clearScreen();
+				if (gameStateManager.getGameState() == GameState.STARTLEVEL) {
+					System.out.println("start");
+				} else {
 
-				player.tapBeer();
-				player.update(deltaTime);
-				
-				
-				
-				for (Guest guest : guests) {
-					guest.update(deltaTime);
-					guest.renderWithRect(gameSpace, Color.GREEN);
-				}
+					// clear
+					clearScreen();
 
-				for (Bar bar : bars) {
-					bar.renderWithRect(gameSpace, Color.BROWN);
-				}
+					// update
+					player.update(deltaTime);
 
-				if (isBrokenMugInTheList()) {
-					mugs.clear();
-
-					if (stats.getLife() > 0) {
-						stats.looseLife();
-						if (stats.getLife() == 0) {
-							System.out.println("GAME OVER");
-							gameLoop.stop();
-						}
+					for (Guest guest : guests) {
+						guest.update(deltaTime);
 					}
-				}
-				
-				if (isAngryGuestInTheList()) {
-					guests.clear();
-					
-					if (stats.getLife() > 0) {
-						stats.looseLife();
-						
-						if (stats.getLife() == 0) {
-							System.out.println("GAME OVER");
-							gameLoop.stop();
-						}
+
+					for (Mug mug : mugs) {
+						mug.update(deltaTime);
 					}
+
+					scoreIndicator.update("Pont: " + gameStateManager.getGameStats().getScore());
+					levelIndicator.update("Szint: " + gameStateManager.getGameStats().getLevel());
+					lifeIndicator.update(gameStateManager.getGameStats().getLife());
+
+					// render
+					for (Guest guest : guests) {
+						guest.renderWithRect(gameSpace, Color.GREEN);
+					}
+
+					for (Bar bar : bars) {
+						bar.renderWithRect(gameSpace, Color.BROWN);
+					}
+
+					for (Mug mug : mugs) {
+						mug.renderWithImage(gameSpace);
+					}
+
+					for (Door door : doors) {
+						door.renderWithRect(gameSpace, Color.BLACK);
+					}
+
+					player.renderWithRect(gameSpace, Color.BLUE);
+
+					scoreIndicator.render(gameSpace);
+					levelIndicator.render(gameSpace);
+					lifeIndicator.render(gameSpace);
+
 				}
-				
-				
-
-				for (Mug mug : mugs) {
-					mug.update(deltaTime);
-					mug.renderWithImage(gameSpace);
-				}
-
-				for (Door door : doors) {
-					door.renderWithRect(gameSpace, Color.BLACK);
-				}
-
-				player.renderWithRect(gameSpace, Color.BLUE);
-
-				scoreIndicator.update("Pont: " + stats.getScore());
-				scoreIndicator.render(gameSpace);
-
-				levelIndicator.update("Szint: " + stats.getLevel());
-				levelIndicator.render(gameSpace);
-
-				lifeIndicator.update(stats.getLife());
-				lifeIndicator.render(gameSpace);
 
 			}
-
 
 		};
 		gameLoop.start();
 
-	}
-
-	private boolean isAngryGuestInTheList() {
-		for (Guest guest: guests) {
-			if (guest.getStatus() == GuestStatus.ANGRY) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isBrokenMugInTheList() {
-		for (Mug mug : mugs) {
-			if (mug.isMugBroken()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void clearScreen() {
@@ -193,8 +163,7 @@ public class GameViewManager {
 	}
 
 	private void createGameElements() {
-		stats = new GameStats();
-		stateOfTheGame = GameState.RUNNING;
+//		stats = new GameStats();
 
 		scoreIndicator = new TextIndicator(100, 50);
 		levelIndicator = new TextIndicator(700, 50);
@@ -214,12 +183,12 @@ public class GameViewManager {
 
 		player.setWidth(40);
 		player.setHeight(80);
-		
+
 		guests.add(new Guest(OnBar.BAR4, bars, 30));
 		guests.add(new Guest(OnBar.BAR3, bars, 30));
 		guests.add(new Guest(OnBar.BAR2, bars, 30));
 		guests.add(new Guest(OnBar.BAR1, bars, 30));
-		
+
 	}
 
 	private void backToMainMenu() {

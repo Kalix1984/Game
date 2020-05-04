@@ -10,7 +10,7 @@ public class GameStats {
 	public GameStats() {
 		playerName = "ismeretlen";
 		life = 4;
-		level = 1;
+		level = 0;
 
 	}
 	

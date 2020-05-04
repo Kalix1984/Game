@@ -23,7 +23,7 @@ public class Player extends Mob {
 				bars.get(actualBar.getIndex()).getEndX() - 40);
 	}
 
-	public void tapBeer() {
+	private void tapBeer() {
 		if (input.isTap() && canTapBeer()) {
 			mugs.add(new Mug(this, bars, actualBar));
 		}
@@ -110,6 +110,7 @@ public class Player extends Mob {
 
 	@Override
 	public void update(double deltaTime) {
+		tapBeer();
 		move(deltaTime);
 		
 	}

@@ -222,7 +222,36 @@ public class GameViewManager {
 					}
 					break;
 				case GAME_OVER:
+					scoreIndicator.update("Pont: " + gameStateManager.getGameStats().getScore());
+					levelIndicator.update("Szint: " + gameStateManager.getGameStats().getLevel());
+					lifeIndicator.update(gameStateManager.getGameStats().getLife());
 
+					// render
+
+					for (Bar bar : bars) {
+						bar.renderWithRect(gameSpace, Color.BROWN);
+					}
+
+					for (Mug mug : mugs) {
+						mug.renderWithImage(gameSpace);
+					}
+
+					for (Door door : doors) {
+						door.renderWithRect(gameSpace, Color.BLACK);
+					}
+
+					player.renderWithRect(gameSpace, Color.BLUE);
+
+					scoreIndicator.render(gameSpace);
+					levelIndicator.render(gameSpace);
+					lifeIndicator.render(gameSpace);
+
+					gamePanel.render(gameSpace, "Vége a játéknak, nyomj ENTER-t");
+					
+					if (gamePanel.isExitKeyPressed()) {
+						System.out.println("GAME OVER");
+						backToMainMenu();
+					}
 					break;
 				case WIN:
 
@@ -271,6 +300,7 @@ public class GameViewManager {
 	}
 
 	private void backToMainMenu() {
+		//elméletileg működik de nem szép
 		Button btn = new Button("vissza");
 		gamePane.getChildren().add(btn);
 

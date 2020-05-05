@@ -32,7 +32,7 @@ public class Player extends Mob {
 
 	private boolean canTapBeer() {
 
-		return boundary.getMinPos() == getPositionX();
+		return boundary.getLeft() == getPositionX();
 	}
 
 	@Override
@@ -122,11 +122,11 @@ public class Player extends Mob {
 	}
 
 	private boolean canMoveLeft() {
-		return getPositionX() >= boundary.getMinPos();
+		return getPositionX() >= boundary.getLeft();
 	}
 
 	private boolean canMoveRight() {
-		return getPositionX() <= boundary.getMaxPos();
+		return getPositionX() <= boundary.getRight();
 	}
 
 }

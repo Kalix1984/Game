@@ -1,24 +1,24 @@
 package application.entities;
 
 public class Boundary {
-	private double minPos;
-	private double maxPos;
+	private double left;
+	private double right;
 
-	public Boundary(double minPos, double maxPos) {
-		this.minPos = minPos;
-		this.maxPos = maxPos;
+	public Boundary(double left, double right) {
+		this.left = left;
+		this.right = right;
 	}
 
-	public double getMinPos() {
-		return minPos;
+	public double getLeft() {
+		return left;
 	}
 
-	public double getMaxPos() {
-		return maxPos;
+	public double getRight() {
+		return right;
 	}
 
-	public void setBounds(double min, double max) {
-		this.minPos = min;
-		this.maxPos = max;
+	public void setBounds(double left, double right) {
+		this.left = left;
+		this.right = right;
 	}
 }

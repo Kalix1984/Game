@@ -3,10 +3,9 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 
+import application.alternator.Alternator;
 import application.entities.Bar;
 import application.entities.Door;
-import application.entities.Guest;
-import application.entities.GuestStatus;
 import application.entities.Mob;
 import application.entities.Mug;
 import application.entities.OnBar;
@@ -15,6 +14,9 @@ import application.gamepanel.GamePanel;
 import application.gamepanel.MessageGamePanel;
 import application.gamestate.GameState;
 import application.gamestate.GameStateManager;
+import application.gueststate.Guest;
+import application.gueststate.GuestState;
+import application.gueststate.GuestsStateManager;
 import application.indicator.Indicator;
 import application.indicator.LifeIndicator;
 import application.indicator.TextIndicator;
@@ -45,6 +47,7 @@ public class GameViewManager {
 	private GraphicsContext gameSpace;
 
 	private GameStateManager gameStateManager;
+	private GuestsStateManager guestStateManager;
 
 	public List<Bar> bars = new ArrayList<>();
 
@@ -68,7 +71,10 @@ public class GameViewManager {
 		initGameStage();
 		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE,
 				KeyCode.ENTER);
+		
+		
 		gameStateManager = new GameStateManager(mugs, guests);
+		guestStateManager = new GuestsStateManager(mugs, guests);
 	}
 
 	private void initGameStage() {
@@ -147,11 +153,17 @@ public class GameViewManager {
 
 					break;
 				case RUNNING:
+					
+					
+					
+					guestStateManager.check();
 					// update
 					player.update(deltaTime);
 
 					for (Guest guest : guests) {
 						guest.update(deltaTime);
+						System.out.println(guest.getState());
+						
 					}
 
 					for (Mug mug : mugs) {

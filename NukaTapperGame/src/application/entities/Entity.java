@@ -86,12 +86,12 @@ public abstract class Entity {
 
 	}
 
-	public Rectangle2D getBoundary() {
+	public Rectangle2D getEntityBoundary() {
 		return new Rectangle2D(positionX, positionY, width, height);
 	}
 
 	public boolean intersects(Entity s) {
-		return s.getBoundary().intersects(this.getBoundary());
+		return s.getEntityBoundary().intersects(this.getEntityBoundary());
 	}
 	
 }

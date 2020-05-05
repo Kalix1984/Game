@@ -3,9 +3,9 @@ package application.gamestate;
 import java.util.List;
 
 import application.GameStats;
-import application.entities.Guest;
-import application.entities.GuestStatus;
 import application.entities.Mug;
+import application.gueststate.Guest;
+import application.gueststate.GuestState;
 
 public class GameStateManager {
 	private List<Mug> mugs;
@@ -63,7 +63,7 @@ public class GameStateManager {
 	
 	private boolean isAngryGuestInTheList() {
 		for (Guest guest: guests) {
-			if (guest.getStatus() == GuestStatus.ANGRY) {
+			if (guest.getState() == GuestState.ANGRY) {
 				return true;
 			}
 		}

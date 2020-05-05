@@ -2,9 +2,11 @@ package application.entities;
 
 import java.util.List;
 
+import application.gueststate.Guest;
+
 public class Mug extends Mob {
 	private OnBar actualBar;
-	private MugStatus status;
+	private MugState state;
 	private Mob owner; // Player / Guest
 	private List<Bar> bars;
 	private Boundary bounds;
@@ -16,35 +18,39 @@ public class Mug extends Mob {
 		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(), bars.get(actualBar.getIndex()).getEndX() - 30);
 
 		if (owner instanceof Player) {
-			status = MugStatus.FORWARD;
+			state = MugState.FORWARD;
 		} else if (owner instanceof Guest) {
-			status = MugStatus.BACKWARD;
+			state = MugState.BACKWARD;
 		}
 
 		setImage("beer.png");
 		setPosition(owner.getPositionX(), owner.getPositionY() + 0);
 	}
 	
-	public MugStatus getStatus() {
-		return status;
+	public MugState getState() {
+		return state;
+	}
+
+	public void setState(MugState state) {
+		this.state = state;
 	}
 
 	public boolean isMugBroken() {
-		return status == MugStatus.BREAK_ONWALL || status == MugStatus.BREAK_ONFLOOR;
+		return state == MugState.BREAK_ONWALL || state == MugState.BREAK_ONFLOOR;
 	}
 
 	@Override
 	public void move(double deltaTime) {
-		if (status == MugStatus.FORWARD && bounds.getMaxPos() > getPositionX()) {
+		if (state == MugState.FORWARD && bounds.getRight() > getPositionX()) {
 			setVelocityX(200);
 			setMoving(true);
-		}else if(status == MugStatus.BACKWARD && bounds.getMinPos() < getPositionX()) {
+		}else if(state == MugState.BACKWARD && bounds.getLeft() < getPositionX()) {
 			setVelocityX(-200);
 			setMoving(true);
-		}else if(status == MugStatus.FORWARD && bounds.getMaxPos() <= getPositionX()) {
+		}else if(state == MugState.FORWARD && bounds.getRight() <= getPositionX()) {
 			setVelocityX(0);
 			setMoving(false);
-			status = MugStatus.BREAK_ONWALL;
+			state = MugState.BREAK_ONWALL;
 		}
 		
 		setPositionX(getPositionX() + getVelocityX() * deltaTime);

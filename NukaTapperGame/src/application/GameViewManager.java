@@ -157,9 +157,9 @@ public class GameViewManager {
 					break;
 				case RUNNING:
 					
-					
-					
+					guestStateManager.remove();
 					guestStateManager.check();
+					
 					// update
 					player.update(deltaTime);
 
@@ -189,9 +189,9 @@ public class GameViewManager {
 						mug.renderWithImage(gameSpace);
 					}
 
-					for (Door door : doors) {
-						door.renderWithRect(gameSpace, Color.BLACK);
-					}
+//					for (Door door : doors) {
+//						door.renderWithRect(gameSpace, Color.BLACK);
+//					}
 
 					player.renderWithRect(gameSpace, Color.BLUE);
 
@@ -217,9 +217,9 @@ public class GameViewManager {
 						mug.renderWithImage(gameSpace);
 					}
 
-					for (Door door : doors) {
-						door.renderWithRect(gameSpace, Color.BLACK);
-					}
+//					for (Door door : doors) {
+//						door.renderWithRect(gameSpace, Color.BLACK);
+//					}
 
 					player.renderWithRect(gameSpace, Color.BLUE);
 
@@ -250,9 +250,9 @@ public class GameViewManager {
 						mug.renderWithImage(gameSpace);
 					}
 
-					for (Door door : doors) {
-						door.renderWithRect(gameSpace, Color.BLACK);
-					}
+//					for (Door door : doors) {
+//						door.renderWithRect(gameSpace, Color.BLACK);
+//					}
 
 					player.renderWithRect(gameSpace, Color.BLUE);
 
@@ -294,10 +294,10 @@ public class GameViewManager {
 		bars.add(new Bar(550, 40, 125, 400));
 		bars.add(new Bar(600, 40, 100, 500));
 
-//		doors.add(new Door(bar1));
-//		doors.add(new Door(bar2));
-//		doors.add(new Door(bar3));
-//		doors.add(new Door(bar4));
+		for (Bar bar : bars) {
+			doors.add(new Door(bar));
+		}
+		
 
 		player = new Player(40, 460, keyListener, bars, mugs);
 

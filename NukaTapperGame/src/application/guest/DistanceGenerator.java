@@ -21,23 +21,14 @@ public class DistanceGenerator {
 		return random.generateInt(minDistance, maxDistance);
 	}
 
-	public void setDistanceOnlyOnce(int minDistance, int maxDistance) {
-
-		if (distance == 0) {
-			distance = generateRandomDistance(minDistance, maxDistance);
-			this.actual = distance;
-		}
+	public void setDistance(int minDistance, int maxDistance) {
+		distance = generateRandomDistance(minDistance, maxDistance);
+		this.actual = distance;
 	}
-	
-	public void setDistanceOnlyOnce(int newDistance) {
-		
-		if (distance == 0) {
-			distance = newDistance;
-			this.actual = distance;
-			
-			
-			System.out.println("only once");
-		}
+
+	public void setDistance(int newDistance) {
+		distance = newDistance;
+		this.actual = distance;
 	}
 
 	public void decrease(double distanceTraveled) {

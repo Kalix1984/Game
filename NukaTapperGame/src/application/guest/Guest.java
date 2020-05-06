@@ -7,6 +7,7 @@ import application.entities.Bar;
 import application.entities.Boundary;
 import application.entities.Mob;
 import application.entities.OnBar;
+import application.gamestate.GameState;
 
 public class Guest extends Mob {
 
@@ -17,15 +18,11 @@ public class Guest extends Mob {
 	private double speed;
 	private DistanceGenerator distance;
 	private CountdownTimer timer;
-	private boolean wait;
 
 	public Guest(OnBar actualBar, List<Bar> bars, double speed, RandomGenerator random) {
 		this.random = random;
-		timer = new CountdownTimer(3);
-		distance = new DistanceGenerator(random);
-		wait = true;
 		this.speed = speed;
-		state = GuestState.COME;
+		state = GuestState.ENTER_COME_IDLE;
 		this.actualBar = actualBar;
 
 		setWidth(40);
@@ -34,8 +31,10 @@ public class Guest extends Mob {
 		setPositionX(bars.get(actualBar.getIndex()).getEndX() + 5);
 		setPositionY(bars.get(actualBar.getIndex()).getPositionY() - 50);
 
-		boundary = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
-				bars.get(actualBar.getIndex()).getEndX() + 55);
+		boundary = new Boundary(
+				bars.get(actualBar.getIndex()).getStarX(),
+				bars.get(actualBar.getIndex()).getEndX()  
+				);
 
 	}
 
@@ -53,51 +52,79 @@ public class Guest extends Mob {
 
 	@Override
 	public void move(double deltaTime) {
-		if (state == GuestState.COME) {
-			
-			if (wait) {
-				setVelocityX(0);
 
-				if (!timer.hasTimeExpired()) {
-					timer.decreaseTime(deltaTime);
-				} else {
-					wait = false;
-					timer.restart();
-				}
-			} else if (!wait) {
-				distance.setDistanceOnlyOnce(30, 70);
-				
-				if (!distance.isDestinationReached()) {
-					setVelocityX(-1 * speed);
-					distance.decrease(getVelocityX() * deltaTime);
-				} else {
-					wait = true;
-					
-					distance = new DistanceGenerator(random);
-				}
+		switch (state) {
+		case ENTER_COME_IDLE:
+			timer = new CountdownTimer(3);
+			setVelocityX(0);
+			state = GuestState.IN_COME_IDLE;
+			break;
+
+		case IN_COME_IDLE:
+			if (!timer.hasTimeExpired()) {
+				timer.decreaseTime(deltaTime);
+			} else {
+				state = GuestState.EXIT_COME_IDLE;
 			}
-		} else if (state == GuestState.LEAVE) {
-			//Ezt írom éppen még nem működik
-			wait = false;
-			distance = new DistanceGenerator();
-			distance.setDistanceOnlyOnce(200);
+			break;
+
+		case EXIT_COME_IDLE:
+			timer = null;
+			state = GuestState.ENTER_COME_MOTION;
+			break;
+
+		case ENTER_COME_MOTION:
+			distance = new DistanceGenerator(random);
+			distance.setDistance(30, 70);
+			state = GuestState.IN_COME_MOTION;
+			break;
+
+		case IN_COME_MOTION:
 			if (!distance.isDestinationReached()) {
+				setVelocityX(-1 * speed);
+				distance.decrease(getVelocityX() * deltaTime);
+			} else {
+				state = GuestState.EXIT_COME_MOTION;
+			}
+			break;
+
+		case EXIT_COME_MOTION:
+			distance = null;
+			state = GuestState.ENTER_COME_IDLE;
+			break;
+
+		case ENTER_LEAVE_IN_MOTION:
+			
+			distance = new DistanceGenerator();
+			distance.setDistance(150);
+			state = GuestState.IN_LEAVE_IN_MOTION;
+			break;
+
+		case IN_LEAVE_IN_MOTION:
+			
+			if (!distance.isDestinationReached()) {
+				
 				setVelocityX(200);
-				distance.decrease( - (getVelocityX() * deltaTime));
+				distance.decrease(getVelocityX() * deltaTime * -1);
+			} else {
+				state = GuestState.EXIT_LEAVE_IN_MOTION;
+			}
+			break;
+
+		case EXIT_LEAVE_IN_MOTION:
+			distance = null;
+			System.out.println(getPositionX() +" " + boundary.getRight());
+			
+			if (getPositionX() >= boundary.getRight()) {
 				
-				System.out.println(distance.actual);
-				
-			}else {
 				setVelocityX(0);
+				setRemovable(true);
+			}else {
+				state = GuestState.ENTER_COME_IDLE;
 			}
 			
-			
-			
-			
-			
+			break;
 		}
-		
-		
 
 		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}

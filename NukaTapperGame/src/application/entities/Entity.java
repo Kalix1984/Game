@@ -8,24 +8,10 @@ import javafx.scene.paint.Color;
 public abstract class Entity {
 	private Image image;
 	
-	private boolean isRemoved;
-
 	private double positionX;
 	private double positionY;
 	private double width;
 	private double height;
-	
-	public void Remove() {
-		this.isRemoved = true;
-	}
-	
-	public void Alive() {
-		this.isRemoved = false;
-	}
-	
-	public boolean isRemoved() {
-		return this.isRemoved;
-	}
 
 	private void setImage(Image image) {
 		this.image = image;

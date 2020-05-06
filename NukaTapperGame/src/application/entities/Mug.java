@@ -15,7 +15,8 @@ public class Mug extends Mob {
 		this.owner = owner;
 		this.bars = bars;
 		this.actualBar = actualBar;
-		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(), bars.get(actualBar.getIndex()).getEndX() - 30);
+		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
+				bars.get(actualBar.getIndex()).getEndX() - 30);
 
 		if (owner instanceof Player) {
 			state = MugState.FORWARD;
@@ -41,18 +42,32 @@ public class Mug extends Mob {
 
 	@Override
 	public void move(double deltaTime) {
-		if (state == MugState.FORWARD && bounds.getRight() > getPositionX()) {
-			setVelocityX(200);
-			setMoving(true);
-		}else if(state == MugState.BACKWARD && bounds.getLeft() < getPositionX()) {
-			setVelocityX(-200);
-			setMoving(true);
-		}else if(state == MugState.FORWARD && bounds.getRight() <= getPositionX()) {
+		switch (state) {
+		case FORWARD:
+			if (getPositionX() < bounds.getRight()) {
+				setVelocityX(200);
+				setMoving(true);
+			}else {
+				state = MugState.BREAK_ONWALL;
+			}
+
+			break;
+			
+		case BACKWARD:
+			if (getPositionX() > bounds.getLeft()) {
+				setVelocityX(-200);
+				setMoving(true);
+			}else {
+				state = MugState.BREAK_ONFLOOR;
+			}
+			break;
+		case IN_HAND:
 			setVelocityX(0);
-			setMoving(false);
-			state = MugState.BREAK_ONWALL;
+			setRemovable(true);
+			
+			break;
 		}
-		
+
 		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 

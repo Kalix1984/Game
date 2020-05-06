@@ -9,10 +9,6 @@ public class CountdownTimer {
 		this.actualValue = startValueInSec;
 	}
 
-	public void restart() {
-		this.actualValue = startValue;
-	}
-
 	public void	decreaseTime(double elapsedTime) {
 		this.actualValue -= elapsedTime;
 	}

@@ -1,9 +1,20 @@
 package application.guest;
 
 public enum GuestState {
+	ENTER_COME_IDLE,
+	IN_COME_IDLE,
+	EXIT_COME_IDLE,
 	
-	COME,
-	LEAVE,
+	ENTER_COME_MOTION,
+	IN_COME_MOTION,
+	EXIT_COME_MOTION,
+	
+	ENTER_LEAVE_IN_MOTION,
+	IN_LEAVE_IN_MOTION,
+	EXIT_LEAVE_IN_MOTION,
+	
+	
+	
 	ASK_MORE,
 	EXIT,
 	ANGRY

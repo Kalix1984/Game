@@ -4,8 +4,8 @@ import java.util.List;
 
 import application.GameStats;
 import application.entities.Mug;
-import application.gueststate.Guest;
-import application.gueststate.GuestState;
+import application.guest.Guest;
+import application.guest.GuestState;
 
 public class GameStateManager {
 	private List<Mug> mugs;

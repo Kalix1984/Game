@@ -1,4 +1,4 @@
-package application.gueststate;
+package application.guest;
 
 import java.util.List;
 import application.entities.Mug;

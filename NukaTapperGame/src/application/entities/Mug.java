@@ -2,7 +2,7 @@ package application.entities;
 
 import java.util.List;
 
-import application.gueststate.Guest;
+import application.guest.Guest;
 
 public class Mug extends Mob {
 	private OnBar actualBar;

@@ -1,4 +1,4 @@
-package application.gueststate;
+package application.guest;
 
 public enum GuestState {
 	

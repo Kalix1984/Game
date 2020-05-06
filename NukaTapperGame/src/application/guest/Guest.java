@@ -1,9 +1,8 @@
-package application.gueststate;
+package application.guest;
 
 import java.util.List;
 
 import application.RandomGenerator;
-import application.alternator.Alternator;
 import application.entities.Bar;
 import application.entities.Boundary;
 import application.entities.Mob;
@@ -16,13 +15,14 @@ public class Guest extends Mob {
 	private final OnBar actualBar;
 	private final RandomGenerator random;
 	private double speed;
-	private double distanceToMove;
-	private long timeToWait = 1_000_000_000 * 10;
-	private long timeWhenMoveAgain;
+	private DistanceGenerator distance;
+	private CountdownTimer timer;
 	private boolean wait;
 
-	public Guest(OnBar actualBar, List<Bar> bars, double speed) {
-		random = new RandomGenerator();
+	public Guest(OnBar actualBar, List<Bar> bars, double speed, RandomGenerator random) {
+		this.random = random;
+		timer = new CountdownTimer(3);
+		distance = new DistanceGenerator(random, 30, 70);
 		wait = true;
 		this.speed = speed;
 		state = GuestState.COME;
@@ -36,22 +36,7 @@ public class Guest extends Mob {
 
 		boundary = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
 				bars.get(actualBar.getIndex()).getEndX() + 55);
-	}
 
-	private long now() {
-		return System.nanoTime();
-	}
-
-	private void generateTimeWhenMoveAgain() {
-		timeWhenMoveAgain = calculateTimeWhenMoveAgain();
-	}
-
-	private void generateRandomDistance(int min, int max) {
-		distanceToMove = random.generateInt(min, max);
-	}
-
-	private long calculateTimeWhenMoveAgain() {
-		return System.nanoTime() + timeToWait;
 	}
 
 	public GuestState getState() {
@@ -69,24 +54,29 @@ public class Guest extends Mob {
 	@Override
 	public void move(double deltaTime) {
 		if (state == GuestState.COME) {
+			
 			if (wait) {
-				if (timeWhenMoveAgain < now()) {
-					generateTimeWhenMoveAgain();
-					setVelocityX(0);
-					System.out.println("W");
-				} else if (timeWhenMoveAgain >= now()) {
+				setVelocityX(0);
+
+				if (!timer.hasTimeExpired()) {
+					timer.decreaseTime(deltaTime);
+				} else {
 					wait = false;
+					timer.restart();
 				}
-			} else {
-				if (distanceToMove < 1.0) {
-					generateRandomDistance(20, 50);
-				} else if (distanceToMove > 1.0) {
+			} else if (!wait) {
+				if (!distance.isDestinationReached()) {
 					setVelocityX(-1 * speed);
-					distanceToMove += getVelocityX() * deltaTime;
+					distance.decrease(getVelocityX() * deltaTime);
+				} else {
+					wait = true;
+					
+					distance = new DistanceGenerator(random, 30, 70);
 				}
 			}
 		}
-	setPositionX(getPositionX() + getVelocityX() * deltaTime);
+
+		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 
 //		} else if (state == GuestState.COME && getPositionX() <= boundary.getMinPos()) {

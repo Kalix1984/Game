@@ -14,9 +14,9 @@ import application.gamepanel.GamePanel;
 import application.gamepanel.MessageGamePanel;
 import application.gamestate.GameState;
 import application.gamestate.GameStateManager;
-import application.gueststate.Guest;
-import application.gueststate.GuestState;
-import application.gueststate.GuestsStateManager;
+import application.guest.Guest;
+import application.guest.GuestState;
+import application.guest.GuestsStateManager;
 import application.indicator.Indicator;
 import application.indicator.LifeIndicator;
 import application.indicator.TextIndicator;
@@ -45,6 +45,8 @@ public class GameViewManager {
 	private Scene gameScene;
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
+	
+	private RandomGenerator random;
 
 	private GameStateManager gameStateManager;
 	private GuestsStateManager guestStateManager;
@@ -75,6 +77,7 @@ public class GameViewManager {
 		
 		gameStateManager = new GameStateManager(mugs, guests);
 		guestStateManager = new GuestsStateManager(mugs, guests);
+		random = new RandomGenerator();
 	}
 
 	private void initGameStage() {
@@ -162,7 +165,6 @@ public class GameViewManager {
 
 					for (Guest guest : guests) {
 						guest.update(deltaTime);
-						System.out.println(guest.getState());
 						
 					}
 
@@ -302,10 +304,10 @@ public class GameViewManager {
 		player.setWidth(40);
 		player.setHeight(80);
 
-		guests.add(new Guest(OnBar.BAR4, bars, 30));
-		guests.add(new Guest(OnBar.BAR3, bars, 30));
-		guests.add(new Guest(OnBar.BAR2, bars, 30));
-		guests.add(new Guest(OnBar.BAR1, bars, 30));
+		guests.add(new Guest(OnBar.BAR4, bars, 30, random));
+		guests.add(new Guest(OnBar.BAR3, bars, 30, random));
+		guests.add(new Guest(OnBar.BAR2, bars, 30, random));
+		guests.add(new Guest(OnBar.BAR1, bars, 30, random));
 
 		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
 

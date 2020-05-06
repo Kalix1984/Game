@@ -3,38 +3,49 @@ package application.guest;
 import application.RandomGenerator;
 
 public class DistanceGenerator {
-	
+
 	private final RandomGenerator random;
-	private int minDistance;
-	private int maxDistance;
-	
-	
+
 	public int distance;
 	public double actual;
 
-	public DistanceGenerator(RandomGenerator random, int minDistance, int maxDistance) {
-		this.random = random;
-		this.minDistance = minDistance;
-		this.maxDistance = maxDistance;
-		this.distance = generateRandomDistance();
-		this.actual = distance;
+	public DistanceGenerator() {
+		random = null;
 	}
 
-	private int generateRandomDistance() {
+	public DistanceGenerator(RandomGenerator random) {
+		this.random = random;
+	}
+
+	private int generateRandomDistance(int minDistance, int maxDistance) {
 		return random.generateInt(minDistance, maxDistance);
 	}
-	
-//	public void setDistance() {
-//		distance = generateRandomDistance();
-//	}
-	
-	public void decrease(double distanceTraveled) {
-		actual += distanceTraveled;  
+
+	public void setDistanceOnlyOnce(int minDistance, int maxDistance) {
+
+		if (distance == 0) {
+			distance = generateRandomDistance(minDistance, maxDistance);
+			this.actual = distance;
+		}
 	}
 	
+	public void setDistanceOnlyOnce(int newDistance) {
+		
+		if (distance == 0) {
+			distance = newDistance;
+			this.actual = distance;
+			
+			
+			System.out.println("only once");
+		}
+	}
+
+	public void decrease(double distanceTraveled) {
+		actual += distanceTraveled;
+	}
+
 	public boolean isDestinationReached() {
 		return actual <= 0;
 	}
-	
-	
+
 }

@@ -22,7 +22,7 @@ public class Guest extends Mob {
 	public Guest(OnBar actualBar, List<Bar> bars, double speed, RandomGenerator random) {
 		this.random = random;
 		timer = new CountdownTimer(3);
-		distance = new DistanceGenerator(random, 30, 70);
+		distance = new DistanceGenerator(random);
 		wait = true;
 		this.speed = speed;
 		state = GuestState.COME;
@@ -65,36 +65,46 @@ public class Guest extends Mob {
 					timer.restart();
 				}
 			} else if (!wait) {
+				distance.setDistanceOnlyOnce(30, 70);
+				
 				if (!distance.isDestinationReached()) {
 					setVelocityX(-1 * speed);
 					distance.decrease(getVelocityX() * deltaTime);
 				} else {
 					wait = true;
 					
-					distance = new DistanceGenerator(random, 30, 70);
+					distance = new DistanceGenerator(random);
 				}
 			}
+		} else if (state == GuestState.LEAVE) {
+			//Ezt írom éppen még nem működik
+			wait = false;
+			distance = new DistanceGenerator();
+			distance.setDistanceOnlyOnce(200);
+			if (!distance.isDestinationReached()) {
+				setVelocityX(200);
+				distance.decrease( - (getVelocityX() * deltaTime));
+				
+				System.out.println(distance.actual);
+				
+			}else {
+				setVelocityX(0);
+			}
+			
+			
+			
+			
+			
 		}
+		
+		
 
 		setPositionX(getPositionX() + getVelocityX() * deltaTime);
 	}
 
-//		} else if (state == GuestState.COME && getPositionX() <= boundary.getMinPos()) {
-//			setVelocityX(0 * speed);
-//			state = GuestState.ANGRY;
-//		}
-
-//	}
-
 	@Override
 	public void update(double deltaTime) {
-//		if (distanceToMove < 1.0) {
-//			generateRandomDistance(30, 80);
-//
-//			setTimeUntilWait();
-//			state = GuestState.WAIT;
-//		}
-//
+
 		move(deltaTime);
 
 	}

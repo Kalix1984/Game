@@ -2,12 +2,9 @@ package application.guest;
 
 public enum GuestState {
 	
-	//WAIT -> COME -> WAIT -> COME...
-	COME,//ANGRY?
-	
-	LEAVE,//WAIT -> LEAVE -> EXIT? DESTROY:ASK_MORE -> WAIT->COME...
+	COME,
+	LEAVE,
 	ASK_MORE,
-	
 	EXIT,
 	ANGRY
 }

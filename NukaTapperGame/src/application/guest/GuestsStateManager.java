@@ -17,11 +17,14 @@ public class GuestsStateManager {
 	}
 
 	public void check() {
+		
+		
 		for (Guest guest : guests) {
 			switch (guest.getState()) {
-			case COME:
+			case COME: //case: ANGRY / LEAVE
 				if (isGuestInLeftBound(guest)) {
 					guest.setState(GuestState.ANGRY);
+					
 				} else {
 					for (Mug mug : mugs) {
 						if (guest.intersects(mug)) {
@@ -32,8 +35,8 @@ public class GuestsStateManager {
 				}
 
 				break;
-			case LEAVE:
-
+			case LEAVE: //case: EXIT / ASK_MORE
+				
 				break;
 			default:
 				break;
@@ -42,20 +45,7 @@ public class GuestsStateManager {
 	}
 
 	private boolean isGuestInLeftBound(Guest guest) {
-		return guest.getBoundary().getLeft() == guest.getPositionX();
+		return guest.getPositionX() <= guest.getBoundary().getLeft();
 	}
-
-//	private boolean isAngry() {
-//		for (Guest guest : guests) {
-//			if (guest.getStatus() == GuestState.ANGRY) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	private boolean isServed() {
-//
-//	}
 
 }

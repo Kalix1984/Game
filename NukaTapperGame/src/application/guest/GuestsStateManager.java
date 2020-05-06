@@ -2,6 +2,8 @@ package application.guest;
 
 import java.util.Iterator;
 import java.util.List;
+
+import application.GameStats;
 import application.entities.Mug;
 import application.entities.MugState;
 
@@ -9,13 +11,26 @@ public class GuestsStateManager {
 
 	private List<Guest> guests;
 	private List<Mug> mugs;
+	private GameStats gameStats;
 
-	public GuestsStateManager(List<Mug> mugs, List<Guest> guests) {
+	public GuestsStateManager(List<Mug> mugs, List<Guest> guests, GameStats gameStats) {
 		this.mugs = mugs;
 		this.guests = guests;
+		this.gameStats = gameStats;
 	}
 
-	public void remove() {
+	public void removeServedGuestsAndGiveScore() {
+		Iterator<Guest> guestListIterator = guests.iterator();
+		while (guestListIterator.hasNext()) {
+			Guest guest = guestListIterator.next();
+			if (guest.isRemovable()) {
+				guestListIterator.remove();
+				gameStats.addScore(100);
+			}
+		}
+	}
+
+	public void removeEmptyMugs() {
 		Iterator<Mug> mugListIterator = mugs.iterator();
 		while (mugListIterator.hasNext()) {
 			Mug mug = mugListIterator.next();
@@ -23,54 +38,30 @@ public class GuestsStateManager {
 				mugListIterator.remove();
 			}
 		}
-		
-		Iterator<Guest> guestListIterator = guests.iterator();
-		while (guestListIterator.hasNext()) {
-			Guest guest = guestListIterator.next();
-			if (guest.isRemovable()) {
-				guestListIterator.remove();
-			}
-		}
 	}
 
-	
-
-	public void check() {
+	public void checkGuestsAreServed() {
 		for (Guest guest : guests) {
 			switch (guest.getState()) {
-			case IN_COME_MOTION: // case: ANGRY / LEAVE
-				if (isGuestOnLeftBound(guest)) {
-					guest.setState(GuestState.ANGRY);
-				} else {
-					for (Mug mug : mugs) {
-						if (guest.intersects(mug)) {
-							guest.setState(GuestState.ENTER_LEAVE_IN_MOTION);
-							mug.setState(MugState.IN_HAND);
-						}
-					}
-				}
-
+			case IN_COME_MOTION:
+				checkGuestsAndMugsCollusion(guest);
 				break;
 			case IN_COME_IDLE:
-				for (Mug mug : mugs) {
-					if (guest.intersects(mug)) {
-						guest.setState(GuestState.ENTER_LEAVE_IN_MOTION);
-						mug.setState(MugState.IN_HAND);
-					}
-				}
+				checkGuestsAndMugsCollusion(guest);
 				break;
-
-//			case LEAVE: //case: EXIT / ASK_MORE
-//				
-//				break;
 			default:
 				break;
 			}
 		}
 	}
 
-	private boolean isGuestOnLeftBound(Guest guest) {
-		return guest.getPositionX() <= guest.getBoundary().getLeft();
+	private void checkGuestsAndMugsCollusion(Guest guest) {
+		for (Mug mug : mugs) {
+			if (guest.intersects(mug)) {
+				guest.setState(GuestState.ENTER_LEAVE_IN_MOTION);
+				mug.setState(MugState.IN_HAND);
+			}
+		}
 	}
 
 }

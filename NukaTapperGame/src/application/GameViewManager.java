@@ -76,7 +76,7 @@ public class GameViewManager {
 		
 		
 		gameStateManager = new GameStateManager(mugs, guests);
-		guestStateManager = new GuestsStateManager(mugs, guests);
+		guestStateManager = new GuestsStateManager(mugs, guests, gameStateManager.getGameStats());
 		random = new RandomGenerator();
 	}
 
@@ -157,8 +157,9 @@ public class GameViewManager {
 					break;
 				case RUNNING:
 					
-					guestStateManager.remove();
-					guestStateManager.check();
+					guestStateManager.removeEmptyMugs();
+					guestStateManager.removeServedGuestsAndGiveScore();
+					guestStateManager.checkGuestsAreServed();
 					
 					// update
 					player.update(deltaTime);

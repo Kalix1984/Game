@@ -66,6 +66,8 @@ public class Mug extends Mob {
 			setRemovable(true);
 			
 			break;
+		default:
+			break;
 		}
 
 		setPositionX(getPositionX() + getVelocityX() * deltaTime);

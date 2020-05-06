@@ -6,6 +6,7 @@ import application.RandomGenerator;
 import application.entities.Bar;
 import application.entities.Boundary;
 import application.entities.Mob;
+import application.entities.Mug;
 import application.entities.OnBar;
 import application.gamestate.GameState;
 
@@ -18,12 +19,16 @@ public class Guest extends Mob {
 	private double speed;
 	private DistanceGenerator distance;
 	private CountdownTimer timer;
+	private List<Mug> mugs;
+	private List<Bar> bars;
 
-	public Guest(OnBar actualBar, List<Bar> bars, double speed, RandomGenerator random) {
+	public Guest(OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed, RandomGenerator random) {
 		this.random = random;
 		this.speed = speed;
 		state = GuestState.ENTER_COME_IDLE;
 		this.actualBar = actualBar;
+		this.mugs = mugs;
+		this.bars = bars;
 
 		setWidth(40);
 		setHeight(80);
@@ -45,6 +50,11 @@ public class Guest extends Mob {
 
 	public Boundary getBoundary() {
 		return boundary;
+	}
+
+	private void returnEmptyMug() {
+		mugs.add(new Mug(this, bars, actualBar));
+		
 	}
 
 	@Override
@@ -82,7 +92,7 @@ public class Guest extends Mob {
 				distance.decrease(getVelocityX() * deltaTime);
 			} else if (distance.isDestinationReached() && getPositionX() > boundary.getLeft()) {
 				state = GuestState.EXIT_COME_MOTION;
-			} else if  (getPositionX() <= boundary.getLeft()) {
+			} else if (getPositionX() <= boundary.getLeft()) {
 				state = GuestState.ANGRY;
 			}
 			break;
@@ -110,15 +120,22 @@ public class Guest extends Mob {
 
 		case EXIT_LEAVE_IN_MOTION:
 			distance = null;
-			
-			if (getPositionX() >= boundary.getRight()) {
 
+			if (getPositionX() >= boundary.getRight()) {
 				setVelocityX(0);
 				setRemovable(true);
 			} else {
-				state = GuestState.ENTER_COME_IDLE;
+				state = GuestState.ASK_MORE_AND_COME;
+//				state = GuestState.ENTER_COME_IDLE;
 			}
+			break;
 
+		case ASK_MORE_AND_COME:
+			setVelocityX(0);
+			returnEmptyMug();
+			state = GuestState.ENTER_COME_IDLE;
+			break;
+		default:
 			break;
 		}
 

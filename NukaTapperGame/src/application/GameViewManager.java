@@ -171,6 +171,12 @@ public class GameViewManager {
 
 					for (Mug mug : mugs) {
 						mug.update(deltaTime);
+						
+						
+						System.out.println(mug.getPositionX());
+						System.out.println(mug.getState());
+						System.out.println(mug.getVelocityX());
+						
 					}
 
 					scoreIndicator.update("Pont: " + gameStateManager.getGameStats().getScore());
@@ -305,10 +311,10 @@ public class GameViewManager {
 		player.setWidth(40);
 		player.setHeight(80);
 
-		guests.add(new Guest(OnBar.BAR4, bars, 30, random));
-		guests.add(new Guest(OnBar.BAR3, bars, 30, random));
-		guests.add(new Guest(OnBar.BAR2, bars, 30, random));
-		guests.add(new Guest(OnBar.BAR1, bars, 30, random));
+		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30, random));
+		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30, random));
+		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30, random));
+		guests.add(new Guest(OnBar.BAR1, bars, mugs, 30, random));
 
 		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
 

@@ -13,9 +13,6 @@ public enum GuestState {
 	IN_LEAVE_IN_MOTION,
 	EXIT_LEAVE_IN_MOTION,
 	
-	
-	
-	ASK_MORE,
-	EXIT,
+	ASK_MORE_AND_COME,
 	ANGRY
 }

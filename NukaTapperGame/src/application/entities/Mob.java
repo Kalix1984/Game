@@ -5,19 +5,8 @@ public abstract class Mob extends Entity{
 	private boolean isMoving = false;
 	private double velocityX;
 	
-	private boolean isRemovable;
-
 	public abstract void move(double deltaTime);	
 	public abstract void update(double deltaTime);	
-	
-	
-	public boolean isRemovable() {
-		return isRemovable;
-	}
-
-	public void setRemovable(boolean isRemovable) {
-		this.isRemovable = isRemovable;
-	}
 		
 	public boolean collision() {
 		return false;

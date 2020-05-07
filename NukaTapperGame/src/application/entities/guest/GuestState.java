@@ -1,4 +1,4 @@
-package application.guest;
+package application.entities.guest;
 
 public enum GuestState {
 	ENTER_COME_IDLE,

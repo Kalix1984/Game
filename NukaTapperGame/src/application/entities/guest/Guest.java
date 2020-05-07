@@ -1,4 +1,4 @@
-package application.guest;
+package application.entities.guest;
 
 import java.util.List;
 
@@ -6,24 +6,26 @@ import application.RandomGenerator;
 import application.entities.Bar;
 import application.entities.Boundary;
 import application.entities.Mob;
-import application.entities.Mug;
 import application.entities.OnBar;
-import application.gamestate.GameState;
+import application.entities.motionmodifiers.CountdownTimer;
+import application.entities.motionmodifiers.Route;
+import application.entities.mug.Mug;
+import application.gamestatemachine.GameState;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Guest extends Mob {
 
 	private Boundary boundary;
 	private GuestState state;
 	private final OnBar actualBar;
-	private final RandomGenerator random;
 	private double speed;
-	private DistanceGenerator distance;
+	private Route route;
 	private CountdownTimer timer;
 	private List<Mug> mugs;
 	private List<Bar> bars;
 
-	public Guest(OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed, RandomGenerator random) {
-		this.random = random;
+	public Guest(OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed) {
 		this.speed = speed;
 		state = GuestState.ENTER_COME_IDLE;
 		this.actualBar = actualBar;
@@ -62,7 +64,7 @@ public class Guest extends Mob {
 
 		switch (state) {
 		case ENTER_COME_IDLE:
-			timer = new CountdownTimer(3);
+			timer = new CountdownTimer(2);
 			setVelocityX(0);
 			state = GuestState.IN_COME_IDLE;
 			break;
@@ -81,16 +83,15 @@ public class Guest extends Mob {
 			break;
 
 		case ENTER_COME_MOTION:
-			distance = new DistanceGenerator(random);
-			distance.setDistance(30, 70);
+			route = new Route(30, 70);
 			state = GuestState.IN_COME_MOTION;
 			break;
 
 		case IN_COME_MOTION:
-			if (!distance.isDestinationReached() && getPositionX() > boundary.getLeft()) {
+			if (!route.isDestinationReached() && getPositionX() > boundary.getLeft()) {
 				setVelocityX(-1 * speed);
-				distance.decrease(getVelocityX() * deltaTime);
-			} else if (distance.isDestinationReached() && getPositionX() > boundary.getLeft()) {
+				route.decrease(getVelocityX() * deltaTime);
+			} else if (route.isDestinationReached() && getPositionX() > boundary.getLeft()) {
 				state = GuestState.EXIT_COME_MOTION;
 			} else if (getPositionX() <= boundary.getLeft()) {
 				state = GuestState.ANGRY;
@@ -98,28 +99,26 @@ public class Guest extends Mob {
 			break;
 
 		case EXIT_COME_MOTION:
-			distance = null;
+			route = null;
 			state = GuestState.ENTER_COME_IDLE;
 			break;
 
 		case ENTER_LEAVE_IN_MOTION:
-
-			distance = new DistanceGenerator();
-			distance.setDistance(150);
+			route = new Route(150);
 			state = GuestState.IN_LEAVE_IN_MOTION;
 			break;
 
 		case IN_LEAVE_IN_MOTION:
-			if (!distance.isDestinationReached() && getPositionX() < boundary.getRight()) {
+			if (!route.isDestinationReached() && getPositionX() < boundary.getRight()) {
 				setVelocityX(200);
-				distance.decrease(getVelocityX() * deltaTime * -1);
+				route.decrease(getVelocityX() * deltaTime * -1);
 			} else {
 				state = GuestState.EXIT_LEAVE_IN_MOTION;
 			}
 			break;
 
 		case EXIT_LEAVE_IN_MOTION:
-			distance = null;
+			route = null;
 
 			if (getPositionX() >= boundary.getRight()) {
 				setVelocityX(0);
@@ -144,9 +143,15 @@ public class Guest extends Mob {
 
 	@Override
 	public void update(double deltaTime) {
-
 		move(deltaTime);
+	}
 
+	@Override
+	public void render(GraphicsContext gameSpace) {
+		gameSpace.setFill(Color.GREEN);
+		gameSpace.setImageSmoothing(true);
+		gameSpace.fillRect(getPositionX(), getPositionY(), getWidth(), getHeight());
+		
 	}
 
 }

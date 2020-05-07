@@ -1,4 +1,4 @@
-package application.entities;
+package application.entities.mug;
 
 public enum MugState {
 	FORWARD,

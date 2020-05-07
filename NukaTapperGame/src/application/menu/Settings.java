@@ -33,7 +33,7 @@ public class Settings {
 		MenuButton backButton = new MenuButton("Vissza");
 		backButton.setAlignment(Pos.CENTER);
 		backButton.setOnAction(e -> {
-			GameMenu mainMenu = new GameMenu(mainStage);
+			Menu mainMenu = new Menu(mainStage);
 			
 			mainStage.getScene().setRoot(mainMenu.getRootPane());
 		});

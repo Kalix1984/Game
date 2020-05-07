@@ -7,11 +7,25 @@ import javafx.scene.paint.Color;
 
 public abstract class Entity {
 	private Image image;
-	
+
 	private double positionX;
 	private double positionY;
 	private double width;
 	private double height;
+
+	private boolean isRemovable;
+
+	public boolean isRemovable() {
+		return isRemovable;
+	}
+
+	public void setRemovable(boolean isRemovable) {
+		this.isRemovable = isRemovable;
+	}
+
+	public Image getImage() {
+		return image;
+	}
 
 	private void setImage(Image image) {
 		this.image = image;
@@ -32,11 +46,11 @@ public abstract class Entity {
 	public void setPositionX(double positionX) {
 		this.positionX = positionX;
 	}
-	
+
 	public void setPositionY(double positionY) {
 		this.positionY = positionY;
 	}
-	
+
 	public double getPositionX() {
 		return positionX;
 	}
@@ -52,7 +66,7 @@ public abstract class Entity {
 	public double getWidth() {
 		return width;
 	}
-	
+
 	public void setWidth(double width) {
 		this.width = width;
 	}
@@ -61,14 +75,17 @@ public abstract class Entity {
 		this.height = height;
 	}
 
-	public void renderWithImage(GraphicsContext gc) {
-		gc.drawImage(image, positionX, positionY);
-	}
+	
+	public abstract void render(GraphicsContext gameSpace);
+	
+//	public void renderWithImage(GraphicsContext gameSpace) {
+//		gameSpace.drawImage(image, positionX, positionY);
+//	}
 
-	public void renderWithRect(GraphicsContext gc, Color color) {
-		gc.setFill(color);
-		gc.setImageSmoothing(true);
-		gc.fillRect(positionX, positionY, width, height);
+	public void renderWithRect(GraphicsContext gameSpace, Color color) {
+		gameSpace.setFill(color);
+		gameSpace.setImageSmoothing(true);
+		gameSpace.fillRect(positionX, positionY, width, height);
 
 	}
 
@@ -79,5 +96,5 @@ public abstract class Entity {
 	public boolean intersects(Entity s) {
 		return s.getEntityBoundary().intersects(this.getEntityBoundary());
 	}
-	
+
 }

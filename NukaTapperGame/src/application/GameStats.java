@@ -32,7 +32,7 @@ public class GameStats {
 		return level;
 	}
 
-	public void reachNewLevel() {
+	public void levelUP() {
 		this.level += 1;
 	}
 	

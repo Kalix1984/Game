@@ -1,7 +1,7 @@
-package application.gamestate;
+package application.gamestatemachine;
 
 public enum GameState {
-	START_LEVEL,
+	INIT_LEVEL,
 	RUNNING,
 	WIN,
 	GAME_OVER,

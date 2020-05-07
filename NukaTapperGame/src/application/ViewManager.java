@@ -1,6 +1,6 @@
 package application;
 
-import application.menu.GameMenu;
+import application.menu.Menu;
 import application.menu.MenuButton;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -67,7 +67,7 @@ public class ViewManager {
 		layout.getChildren().add(box);
 
 		btn.setOnAction(e -> {
-			GameMenu mainMenu = new GameMenu(mainStage);
+			Menu mainMenu = new Menu(mainStage);
 			
 			mainStage.getScene().setRoot(mainMenu.getRootPane());
 		});

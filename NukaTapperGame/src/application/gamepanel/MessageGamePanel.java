@@ -46,4 +46,10 @@ public class MessageGamePanel extends Entity implements GamePanel {
 		return input.isStart();
 	}
 
+	@Override
+	public void render(GraphicsContext gameSpace) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

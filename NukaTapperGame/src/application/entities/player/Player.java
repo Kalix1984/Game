@@ -1,7 +1,16 @@
-package application.entities;
+package application.entities.player;
 
 import java.util.List;
+
+import application.entities.Bar;
+import application.entities.Boundary;
+import application.entities.Direction;
+import application.entities.Mob;
+import application.entities.OnBar;
+import application.entities.mug.Mug;
 import application.input.Keyboard;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Player extends Mob {
 
@@ -127,6 +136,17 @@ public class Player extends Mob {
 
 	private boolean canMoveRight() {
 		return getPositionX() <= boundary.getRight();
+	}
+
+	@Override
+	public void render(GraphicsContext gameSpace) {
+		gameSpace.setFill(Color.BLUE);
+		gameSpace.setImageSmoothing(true);
+		gameSpace.fillRect(getPositionX(), getPositionY(), getWidth(), getHeight());
+		
+		
+//		gameSpace.drawImage(getImage(), getPositionX(), getPositionY());
+		
 	}
 
 }

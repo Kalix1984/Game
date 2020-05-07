@@ -1,11 +1,9 @@
-package application.guest;
+package application.entities.motionmodifiers;
 
 public class CountdownTimer {
-	private double startValue;
 	private double actualValue;
 	
 	public CountdownTimer(double startValueInSec) {
-		this.startValue = startValueInSec;
 		this.actualValue = startValueInSec;
 	}
 

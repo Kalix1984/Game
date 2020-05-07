@@ -7,11 +7,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class GameMenu {
+public class Menu {
 	private final Parent rootPane;
 	private final Stage mainStage;
 
-	public GameMenu(Stage mainStage) {
+	public Menu(Stage mainStage) {
 		this.mainStage = mainStage;
 		rootPane = generateMenu();
 

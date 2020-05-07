@@ -1,20 +1,22 @@
-package application.entities;
+package application.entities.mug;
 
 import java.util.List;
 
-import application.guest.Guest;
+import application.entities.Bar;
+import application.entities.Boundary;
+import application.entities.Mob;
+import application.entities.OnBar;
+import application.entities.guest.Guest;
+import application.entities.player.Player;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Mug extends Mob {
-	private OnBar actualBar;
 	private MugState state;
 	private Mob owner; // Player / Guest
-	private List<Bar> bars;
 	private Boundary bounds;
 
 	public Mug(Mob owner, List<Bar> bars, OnBar actualBar) {
 		this.owner = owner;
-		this.bars = bars;
-		this.actualBar = actualBar;
 		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
 				bars.get(actualBar.getIndex()).getEndX() - 30);
 
@@ -76,5 +78,11 @@ public class Mug extends Mob {
 	@Override
 	public void update(double deltaTime) {
 		move(deltaTime);
+	}
+
+	@Override
+	public void render(GraphicsContext gameSpace) {
+		gameSpace.drawImage(getImage(), getPositionX(), getPositionY());
+		
 	}
 }

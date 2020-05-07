@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import application.GameStats;
+import application.entities.OnBar;
 import application.entities.guest.Guest;
 import application.entities.guest.GuestState;
 import application.entities.mug.Mug;
@@ -46,6 +47,14 @@ public class GameStateManager {
 		return GameState.RUNNING;
 	}
 
+	public void addGuests() {
+		guests.add(new Guest(OnBar.BAR1, bars, mugs, 30));
+		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30));
+		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30));
+		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30));
+
+	}
+
 	private boolean isLevelCompleted() {
 		return guests.isEmpty();
 	}
@@ -53,8 +62,6 @@ public class GameStateManager {
 	private boolean isGameOver() {
 		return gameStats.getLife() == 0;
 	}
-	
-	
 
 	public void restartLevel() {
 		guests.clear();

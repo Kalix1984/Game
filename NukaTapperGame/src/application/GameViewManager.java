@@ -134,6 +134,9 @@ public class GameViewManager {
 					gamePanel.render(gameSpace, "Kezdéshez nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
+						//init new guests
+						
+						
 						gameStateManager.changeGameState(GameState.RUNNING);
 					}
 

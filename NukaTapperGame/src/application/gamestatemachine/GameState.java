@@ -5,6 +5,7 @@ public enum GameState {
 	RUNNING,
 	WIN,
 	GAME_OVER,
-	LOSE_LIFE
+	LOSE_LIFE,
+	ADD_GUESTS
 	
 }

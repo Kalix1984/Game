@@ -11,6 +11,7 @@ public class LevelIndicator extends Entity implements Indicator{
 	
 	public LevelIndicator(double posX, double posY, GameStats gameStats) {
 		this.gameStats = gameStats;
+		setPosition(posX, posY);
 		
 	}
 

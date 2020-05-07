@@ -12,22 +12,25 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Mug extends Mob {
 	private MugState state;
-	private Mob owner; // Player / Guest
 	private Boundary bounds;
+	private int speed;
 
 	public Mug(Mob owner, List<Bar> bars, OnBar actualBar) {
-		this.owner = owner;
-		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX(),
+		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX() - 30,
 				bars.get(actualBar.getIndex()).getEndX() - 30);
 
+		setImage("beer.png");
+		
 		if (owner instanceof Player) {
+			setPosition(owner.getPositionX(), owner.getPositionY());
+			speed = 200; 
 			state = MugState.FORWARD;
+			
 		} else if (owner instanceof Guest) {
+			setPosition(owner.getPositionX()- getWidth() - 5, owner.getPositionY() + 10);
+			speed = -50;
 			state = MugState.BACKWARD;
 		}
-
-		setImage("beer.png");
-		setPosition(owner.getPositionX(), owner.getPositionY() + 0);
 	}
 	
 	public MugState getState() {
@@ -47,7 +50,7 @@ public class Mug extends Mob {
 		switch (state) {
 		case FORWARD:
 			if (getPositionX() < bounds.getRight()) {
-				setVelocityX(200);
+				setVelocityX(speed);
 				setMoving(true);
 			}else {
 				state = MugState.BREAK_ONWALL;
@@ -57,17 +60,23 @@ public class Mug extends Mob {
 			
 		case BACKWARD:
 			if (getPositionX() > bounds.getLeft()) {
-				setVelocityX(-200);
+				setVelocityX(speed);
 				setMoving(true);
 			}else {
 				state = MugState.BREAK_ONFLOOR;
 			}
 			break;
-		case IN_HAND:
+			
+		case IN_GUEST_HANDS:
 			setVelocityX(0);
 			setRemovable(true);
-			
 			break;
+			
+		case IN_PLAYER_HANDS:
+			setVelocityX(0);
+			setRemovable(true);
+			break;
+			
 		default:
 			break;
 		}

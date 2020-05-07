@@ -5,5 +5,7 @@ public enum MugState {
 	BACKWARD, 
 	BREAK_ONWALL,
 	BREAK_ONFLOOR,
-	IN_HAND
+	IN_GUEST_HANDS,
+	IN_PLAYER_HANDS
+	
 }

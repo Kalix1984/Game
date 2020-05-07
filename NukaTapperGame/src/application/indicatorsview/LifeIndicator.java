@@ -10,6 +10,7 @@ public class LifeIndicator extends Entity implements Indicator{
 
 	public LifeIndicator(double posX, double posY, GameStats gameStats) {
 		this.gameStats = gameStats;
+		setPosition(posX, posY);
 
 	}
 

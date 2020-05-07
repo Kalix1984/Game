@@ -8,15 +8,18 @@ import application.entities.guest.Guest;
 import application.entities.guest.GuestState;
 import application.entities.mug.Mug;
 import application.entities.mug.MugState;
+import application.entities.player.Player;
 
 public class GameStateManager {
+	private Player player;
 	private List<Mug> mugs;
 	private List<Guest> guests;
 	private GameStats gameStats;
-	
+
 	private GameState gameState;
 
-	public GameStateManager(List<Mug> mugs, List<Guest> guests, GameStats gameStats) {
+	public GameStateManager(Player player, List<Mug> mugs, List<Guest> guests, GameStats gameStats) {
+		this.player = player;
 		this.mugs = mugs;
 		this.guests = guests;
 		this.gameStats = gameStats;
@@ -27,27 +30,31 @@ public class GameStateManager {
 		return gameState;
 	}
 
-	public GameStats getGameStats() {
-		return gameStats;
-	}
-
 	public void changeGameState(GameState newState) {
 		this.gameState = newState;
 	}
 
-	public GameState check() {
+	public GameState checkGameState() {
 		if (isBrokenMugInTheList() || isAngryGuestInTheList() && !isGameOver()) {
 			return GameState.LOSE_LIFE;
 		} else if (isGameOver()) {
 			return GameState.GAME_OVER;
+		} else if (isLevelCompleted()) {
+			return GameState.INIT_LEVEL;
 		}
 
 		return GameState.RUNNING;
 	}
 
+	private boolean isLevelCompleted() {
+		return guests.isEmpty();
+	}
+
 	private boolean isGameOver() {
 		return gameStats.getLife() == 0;
 	}
+	
+	
 
 	public void restartLevel() {
 		guests.clear();
@@ -72,18 +79,17 @@ public class GameStateManager {
 		return false;
 	}
 
-	public void removeServedGuestsAndGiveScore() {
+	public void removeGuests() {
 		Iterator<Guest> guestListIterator = guests.iterator();
 		while (guestListIterator.hasNext()) {
 			Guest guest = guestListIterator.next();
 			if (guest.isRemovable()) {
 				guestListIterator.remove();
-				gameStats.addScore(100);
 			}
 		}
 	}
 
-	public void removeEmptyMugs() {
+	public void removeMugs() {
 		Iterator<Mug> mugListIterator = mugs.iterator();
 		while (mugListIterator.hasNext()) {
 			Mug mug = mugListIterator.next();
@@ -93,28 +99,53 @@ public class GameStateManager {
 		}
 	}
 
-	public void checkGuestsAreServed() {
+	public void checkCatches() {
 		for (Guest guest : guests) {
 			switch (guest.getState()) {
 			case IN_COME_MOTION:
-				checkGuestsAndMugsCollusion(guest);
+				if (isMugCatchedByGuest(guest)) {
+					gameStats.addScore(100);
+				}
 				break;
 			case IN_COME_IDLE:
-				checkGuestsAndMugsCollusion(guest);
+				if (isMugCatchedByGuest(guest)) {
+					gameStats.addScore(100);
+				}
 				break;
 			default:
 				break;
 			}
+
+		}
+
+		if (isMugCatchedByPlayer(player)) {
+			gameStats.addScore(200);
 		}
 	}
 
-	private void checkGuestsAndMugsCollusion(Guest guest) {
+	private boolean isMugCatchedByGuest(Guest guest) {
 		for (Mug mug : mugs) {
-			if (guest.intersects(mug)) {
+			if (mug.getState() == MugState.FORWARD && guest.intersects(mug)) {
 				guest.setState(GuestState.ENTER_LEAVE_IN_MOTION);
-				mug.setState(MugState.IN_HAND);
+				mug.setState(MugState.IN_GUEST_HANDS);
+
+				return true;
 			}
 		}
+		return false;
 	}
 
+	private boolean isMugCatchedByPlayer(Player player) {
+		for (Mug mug : mugs) {
+
+			if (mug.getState() == MugState.BACKWARD && player.intersects(mug)) {
+				mug.setState(MugState.IN_PLAYER_HANDS);
+
+				System.out.println("belépett ide");
+
+				return true;
+			}
+		}
+		return false;
+	}
 }

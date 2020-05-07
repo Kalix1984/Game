@@ -130,7 +130,7 @@ public class Guest extends Mob {
 			break;
 
 		case ASK_MORE_AND_COME:
-			setVelocityX(0);
+//			setVelocityX(0);
 			returnEmptyMug();
 			state = GuestState.ENTER_COME_IDLE;
 			break;

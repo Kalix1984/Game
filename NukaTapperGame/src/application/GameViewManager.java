@@ -41,7 +41,7 @@ public class GameViewManager {
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
 
-	private RandomGenerator random;
+//	private RandomGenerator random;
 
 	private GameStats gameStats;
 
@@ -71,7 +71,7 @@ public class GameViewManager {
 		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE,
 				KeyCode.ENTER);
 
-		random = new RandomGenerator();
+//		random = new RandomGenerator();
 	}
 
 	private void initGameStage() {
@@ -111,17 +111,15 @@ public class GameViewManager {
 
 				switch (gameStateManager.getGameState()) {
 				case INIT_LEVEL:
-					
-					
 					// render
 
 					for (Bar bar : bars) {
 						bar.render(gameSpace);
 					}
 
-					for (Mug mug : mugs) {
-						mug.render(gameSpace);
-					}
+//					for (Mug mug : mugs) {
+//						mug.render(gameSpace);
+//					}
 
 					for (Door door : doors) {
 						door.render(gameSpace);
@@ -148,17 +146,12 @@ public class GameViewManager {
 
 					for (Guest guest : guests) {
 						guest.update(deltaTime);
-
 					}
 
 					for (Mug mug : mugs) {
 						mug.update(deltaTime);
-
-						System.out.println(mug.getPositionX());
-						System.out.println(mug.getState());
-						System.out.println(mug.getVelocityX());
-
 					}
+					
 
 					// render
 					for (Guest guest : guests) {
@@ -183,18 +176,15 @@ public class GameViewManager {
 					levelIndicator.render(gameSpace);
 					lifeIndicator.render(gameSpace);
 
+					gameStateManager.checkCatches();
+					
+					//remove "dead" things
+					gameStateManager.removeGuests();
+					gameStateManager.removeMugs();
+					
 					// check cases
-					gameStateManager.changeGameState(gameStateManager.check());
-					gameStateManager.checkGuestsAreServed();
-					gameStateManager.removeEmptyMugs();
-					gameStateManager.removeServedGuestsAndGiveScore();
+					gameStateManager.changeGameState(gameStateManager.checkGameState());
 					
-					
-
-//					guestStateManager.removeEmptyMugs();
-//					guestStateManager.removeServedGuestsAndGiveScore();
-//					guestStateManager.checkGuestsAreServed();
-
 					break;
 					
 				case LOSE_LIFE:
@@ -220,7 +210,7 @@ public class GameViewManager {
 					gamePanel.render(gameSpace, "Életet vesztettél, nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
-						gameStateManager.getGameStats().looseLife();
+						gameStats.looseLife();
 						gameStateManager.restartLevel();
 						gameStateManager.changeGameState(GameState.RUNNING);
 					}
@@ -277,7 +267,6 @@ public class GameViewManager {
 
 		gameStats = new GameStats();
 
-		gameStateManager = new GameStateManager(mugs, guests, gameStats);
 
 		scoreIndicator = new ScoreIndicator(20, 50, gameStats);
 		levelIndicator = new LevelIndicator(680, 50, gameStats);
@@ -296,6 +285,8 @@ public class GameViewManager {
 		player.setWidth(40);
 		player.setHeight(80);
 
+		gameStateManager = new GameStateManager(player, mugs, guests, gameStats);
+		
 		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30));
 		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30));
 		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30));

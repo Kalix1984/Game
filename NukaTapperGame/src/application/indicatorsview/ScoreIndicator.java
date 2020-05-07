@@ -12,6 +12,7 @@ public class ScoreIndicator extends Entity implements Indicator{
 
 	public ScoreIndicator(double posX, double posY, GameStats gameStats) {
 		this.gameStats = gameStats;
+		setPosition(posX, posY);
 	}
 
 	@Override

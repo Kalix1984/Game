@@ -1,18 +1,14 @@
 package application.indicatorsview;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import application.GameStats;
 import application.entities.Entity;
 import javafx.scene.canvas.GraphicsContext;
 
-public class LifeIndicator extends Indicator {
+public class LifeIndicator extends Entity implements Indicator{
 
 	private GameStats gameStats;
 
 	public LifeIndicator(double posX, double posY, GameStats gameStats) {
-		super(posX, posY, gameStats);
 		this.gameStats = gameStats;
 
 	}

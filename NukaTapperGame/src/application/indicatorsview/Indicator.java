@@ -1,14 +1,7 @@
 package application.indicatorsview;
 
-import application.GameStats;
-import application.entities.Entity;
+import javafx.scene.canvas.GraphicsContext;
 
-public abstract class Indicator extends Entity {
-
-	private GameStats gameStats;
-
-	public Indicator(double posX, double posY, GameStats gameStats) {
-		setPosition(posX, posY);
-		this.gameStats = gameStats;
-	}
+public interface Indicator{
+	void render(GraphicsContext gameSpace);
 }

@@ -62,6 +62,7 @@ public class GameViewManager {
 	private Indicator scoreIndicator;
 	private Indicator levelIndicator;
 	private Indicator lifeIndicator;
+	
 
 	public List<Mug> mugs = new ArrayList<>();
 
@@ -131,7 +132,7 @@ public class GameViewManager {
 					scoreIndicator.render(gameSpace);
 					levelIndicator.render(gameSpace);
 					lifeIndicator.render(gameSpace);
-
+					
 					gamePanel.render(gameSpace, "Kezdéshez nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
@@ -184,6 +185,11 @@ public class GameViewManager {
 
 					// check cases
 					gameStateManager.changeGameState(gameStateManager.check());
+					gameStateManager.checkGuestsAreServed();
+					gameStateManager.removeEmptyMugs();
+					gameStateManager.removeServedGuestsAndGiveScore();
+					
+					
 
 //					guestStateManager.removeEmptyMugs();
 //					guestStateManager.removeServedGuestsAndGiveScore();

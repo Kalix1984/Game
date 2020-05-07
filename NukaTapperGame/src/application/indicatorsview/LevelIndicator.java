@@ -1,15 +1,15 @@
 package application.indicatorsview;
 
 import application.GameStats;
+import application.entities.Entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class LevelIndicator extends Indicator{
+public class LevelIndicator extends Entity implements Indicator{
 	private GameStats gameStats;
 	
 	public LevelIndicator(double posX, double posY, GameStats gameStats) {
-		super(posX, posY, gameStats);
 		this.gameStats = gameStats;
 		
 	}

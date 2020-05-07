@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import application.GameStats;
+import application.entities.Bar;
 import application.entities.OnBar;
 import application.entities.guest.Guest;
 import application.entities.guest.GuestState;
@@ -15,16 +16,18 @@ public class GameStateManager {
 	private Player player;
 	private List<Mug> mugs;
 	private List<Guest> guests;
+	private List<Bar> bars;
 	private GameStats gameStats;
 
 	private GameState gameState;
 
-	public GameStateManager(Player player, List<Mug> mugs, List<Guest> guests, GameStats gameStats) {
+	public GameStateManager(Player player, List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
 		this.player = player;
 		this.mugs = mugs;
 		this.guests = guests;
+		this.bars = bars;
 		this.gameStats = gameStats;
-		this.gameState = GameState.INIT_LEVEL;
+		this.gameState = GameState.START_LEVEL;
 	}
 
 	public GameState getGameState() {
@@ -41,7 +44,7 @@ public class GameStateManager {
 		} else if (isGameOver()) {
 			return GameState.GAME_OVER;
 		} else if (isLevelCompleted()) {
-			return GameState.INIT_LEVEL;
+			return GameState.INIT_NEXT_LEVEL;
 		}
 
 		return GameState.RUNNING;
@@ -65,6 +68,10 @@ public class GameStateManager {
 
 	public void restartLevel() {
 		guests.clear();
+		mugs.clear();
+	}
+	
+	public void removeAllRemainingMugs() {
 		mugs.clear();
 	}
 
@@ -147,8 +154,6 @@ public class GameStateManager {
 
 			if (mug.getState() == MugState.BACKWARD && player.intersects(mug)) {
 				mug.setState(MugState.IN_PLAYER_HANDS);
-
-				System.out.println("belépett ide");
 
 				return true;
 			}

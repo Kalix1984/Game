@@ -1,9 +1,9 @@
 package application.gamestatemachine;
 
 public enum GameState {
-	INIT_LEVEL,
+	START_LEVEL,
 	RUNNING,
-	WIN,
+	INIT_NEXT_LEVEL,
 	GAME_OVER,
 	LOSE_LIFE,
 	ADD_GUESTS

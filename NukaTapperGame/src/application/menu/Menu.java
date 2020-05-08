@@ -33,7 +33,7 @@ public class Menu {
 
 		startButton.setOnAction(e -> {
 			GameViewManager game = new GameViewManager();
-			game.newGame(mainStage);
+			game.changeToGameStage(mainStage);
 		});
 
 		toplistButton.setOnAction(e -> {

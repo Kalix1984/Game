@@ -41,21 +41,16 @@ public class GameViewManager {
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
 
-//	private RandomGenerator random;
-
+	private GameStateManager gameStateManager;
 	private GameStats gameStats;
 
-	private GameStateManager gameStateManager;
-
 	public List<Bar> bars = new ArrayList<>();
+	private List<Guest> guests = new ArrayList<>();
+	private List<Mug> mugs = new ArrayList<>();
+	private List<Door> doors = new ArrayList<>();
 
 	private Keyboard keyListener;
 	private Player player;
-
-	public List<Guest> guests = new ArrayList<>();
-
-	// takaró elemek csak
-	private List<Door> doors = new ArrayList<>();
 
 	private GamePanel gamePanel;
 
@@ -63,14 +58,10 @@ public class GameViewManager {
 	private Indicator levelIndicator;
 	private Indicator lifeIndicator;
 
-	public List<Mug> mugs = new ArrayList<>();
-
 	public GameViewManager() {
 		initGameStage();
 		keyListener = new Keyboard(gameScene, KeyCode.LEFT, KeyCode.RIGHT, KeyCode.UP, KeyCode.DOWN, KeyCode.SPACE,
 				KeyCode.ENTER);
-
-//		random = new RandomGenerator();
 	}
 
 	private void initGameStage() {
@@ -86,15 +77,26 @@ public class GameViewManager {
 		gameStage.setResizable(false);
 	}
 
-	public void newGame(Stage menuStage) {
+	public void changeToGameStage(Stage menuStage) {
 		this.menuStage = menuStage;
 		menuStage.hide();
+		
 		createGameElements();
 		createGameLoop();
 		gamePane.getChildren().add(canvas);
 		gameStage.show();
 	}
+	
+	private void changeToMenuStage() {
+		new Main();
+	}
 
+	private void createPlayerAtRespawnPoint() {
+		player = new Player(40, 460, keyListener, bars, mugs);
+		player.setWidth(40);
+		player.setHeight(80);
+		
+	}
 	private void createGameLoop() {
 		lastNanoTime = System.nanoTime();
 
@@ -105,16 +107,23 @@ public class GameViewManager {
 				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0;
 				lastNanoTime = currentNanoTime;
 
+				System.out.println(player);
+				
 				// clear
 				clearGameSpace();
 
 				switch (gameStateManager.getGameState()) {
-				case START_LEVEL:
-//					respown
-					player = new Player(40, 460, keyListener, bars, mugs);
-					player.setWidth(40);
-					player.setHeight(80);
+				case INIT_LEVEL:
+					gameStats.levelUP();
+					gameStateManager.removeAllRemainingMugs();
 					
+					createPlayerAtRespawnPoint();
+					
+					gameStateManager.addGuests();
+					gameStateManager.changeGameState(GameState.START_LEVEL);
+					break;
+					
+				case START_LEVEL:
 					// render
 					renderGameObjects();
 
@@ -127,7 +136,6 @@ public class GameViewManager {
 					break;
 
 				case RUNNING:
-
 					// update
 					player.update(deltaTime);
 
@@ -142,7 +150,7 @@ public class GameViewManager {
 					renderGameObjects();
 
 					// check cases
-					gameStateManager.checkCatches();
+					gameStateManager.checkCatches(player);
 
 					// remove "dead" things
 					gameStateManager.removeGuests();
@@ -154,18 +162,12 @@ public class GameViewManager {
 					break;
 
 				case LOSE_LIFE:
-					//respown
-//					player = new Player(40, 460, keyListener, bars, mugs);
-//					player.setWidth(40);
-//					player.setHeight(80);
-					
-					
-					
 					renderGameObjects();
 					
 					gamePanel.render(gameSpace, "Életet vesztettél, nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
+						createPlayerAtRespawnPoint();
 						gameStats.looseLife();
 						gameStateManager.restartLevel();
 						gameStateManager.changeGameState(GameState.RUNNING);
@@ -180,22 +182,16 @@ public class GameViewManager {
 
 					if (gamePanel.isExitKeyPressed()) {
 						System.out.println("GAME OVER");
-						backToMainMenu();
+						changeToMenuStage();
 					}
 					break;
 
-				case INIT_NEXT_LEVEL:
-					gameStats.levelUP();
-					gameStateManager.removeAllRemainingMugs();
-					gameStateManager.respawnPlayer();
-					gameStateManager.addGuests();
-					gameStateManager.changeGameState(GameState.START_LEVEL);
-					break;
 					
 				default:
 					break;
 				}
 			}
+
 
 			private void renderGameObjects() {
 				for (Guest guest : guests) {
@@ -246,30 +242,10 @@ public class GameViewManager {
 			doors.add(new Door(bar));
 		}
 
-//		player = new Player(40, 460, keyListener, bars, mugs);
-//		player.setWidth(40);
-//		player.setHeight(80);
-
-		gameStateManager = new GameStateManager(player, keyListener, mugs, guests, bars, gameStats);
-
-		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR1, bars, mugs, 30));
-
+		gameStateManager = new GameStateManager(mugs, guests, bars, gameStats);
 		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
 
 	}
 
-	private void backToMainMenu() {
-		// elméletileg működik de nem szép
-		Button btn = new Button("vissza");
-		gamePane.getChildren().add(btn);
-
-		btn.setOnAction(e -> {
-			menuStage.show();
-			gameStage.hide();
-		});
-
-	}
+	
 }

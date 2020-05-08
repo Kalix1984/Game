@@ -40,10 +40,7 @@ public class Player extends Mob {
 	}
 
 	private boolean canTapBeer() {
-		
-		System.out.println(boundary.getLeft() - 5  + " és " + boundary.getLeft() + 5 + " játékos: " + getPositionX());
-		
-		return getPositionX() > boundary.getLeft() - 5 && getPositionX() < boundary.getLeft() + 5;
+		return getPositionX() > boundary.getLeft() - 5.0 && getPositionX() < boundary.getLeft() + 5.0;
 	}
 
 	@Override

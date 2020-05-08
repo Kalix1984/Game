@@ -14,8 +14,7 @@ import application.entities.properties.OnBar;
 import application.input.Keyboard;
 
 public class GameStateManager {
-	private Player player;
-	private Keyboard keyListener;
+	
 	private List<Mug> mugs;
 	private List<Guest> guests;
 	private List<Bar> bars;
@@ -23,20 +22,14 @@ public class GameStateManager {
 
 	private GameState gameState;
 
-	public GameStateManager(Player player, Keyboard keyListener, List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
-		this.player = player;
-		this.keyListener = keyListener;
+	public GameStateManager(List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
 		this.mugs = mugs;
 		this.guests = guests;
 		this.bars = bars;
 		this.gameStats = gameStats;
-		this.gameState = GameState.START_LEVEL;
+		this.gameState = GameState.INIT_LEVEL;
 	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
+	
 	public GameState getGameState() {
 		return gameState;
 	}
@@ -51,7 +44,7 @@ public class GameStateManager {
 		} else if (isGameOver()) {
 			return GameState.GAME_OVER;
 		} else if (isLevelCompleted()) {
-			return GameState.INIT_NEXT_LEVEL;
+			return GameState.INIT_LEVEL;
 		}
 
 		return GameState.RUNNING;
@@ -62,6 +55,8 @@ public class GameStateManager {
 		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30));
 		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30));
 		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30));
+		
+		
 
 	}
 
@@ -121,14 +116,14 @@ public class GameStateManager {
 		}
 	}
 
-	public void respawnPlayer() {
-		player = null;
-		player = new Player(40, 460, keyListener, bars, mugs);
-		player.setWidth(40);
-		player.setHeight(80);
-	}
+//	public void respawnPlayer() {
+//		
+//		player = new Player(40, 460, keyListener, bars, mugs);
+//		player.setWidth(40);
+//		player.setHeight(80);
+//	}
 
-	public void checkCatches() {
+	public void checkCatches(Player player) {
 		for (Guest guest : guests) {
 			switch (guest.getState()) {
 			case IN_COME:

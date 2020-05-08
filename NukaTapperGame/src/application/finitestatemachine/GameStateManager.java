@@ -1,9 +1,10 @@
 package application.finitestatemachine;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import application.GameStats;
+import application.RandomGenerator;
 import application.entities.Bar;
 import application.entities.guest.Guest;
 import application.entities.guest.GuestState;
@@ -11,25 +12,27 @@ import application.entities.mug.Mug;
 import application.entities.mug.MugState;
 import application.entities.player.Player;
 import application.entities.properties.OnBar;
-import application.input.Keyboard;
 
 public class GameStateManager {
-	
+
 	private List<Mug> mugs;
-	private List<Guest> guests;
+	private List<List<Guest>> allGuests;
 	private List<Bar> bars;
 	private GameStats gameStats;
 
 	private GameState gameState;
 
-	public GameStateManager(List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
+	private RandomGenerator random;
+
+	public GameStateManager(List<Mug> mugs, List<List<Guest>> allGuests, List<Bar> bars, GameStats gameStats) {
 		this.mugs = mugs;
-		this.guests = guests;
+		this.allGuests = allGuests;
 		this.bars = bars;
 		this.gameStats = gameStats;
 		this.gameState = GameState.INIT_LEVEL;
+		random = new RandomGenerator();
 	}
-	
+
 	public GameState getGameState() {
 		return gameState;
 	}
@@ -50,18 +53,45 @@ public class GameStateManager {
 		return GameState.RUNNING;
 	}
 
-	public void addGuests() {
-		guests.add(new Guest(OnBar.BAR1, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR2, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR3, bars, mugs, 30));
-		guests.add(new Guest(OnBar.BAR4, bars, mugs, 30));
-		
-		
+	public void initGuests() {
+		List<Guest> bar1 = new ArrayList<>();
+		List<Guest> bar2 = new ArrayList<>();
+		List<Guest> bar3 = new ArrayList<>();
+		List<Guest> bar4 = new ArrayList<>();
 
+		int actualLevel = gameStats.getLevel();
+		int speedMutator = 30 * actualLevel;
+
+		for (int i = 0; i < random.generateInt(1, actualLevel); i++) {
+			bar1.add(new Guest(bars.get(0).getEndX() + 5 + i * 70, OnBar.BAR1, bars, mugs, speedMutator));
+		}
+
+		for (int i = 0; i < random.generateInt(1, actualLevel); i++) {
+			bar2.add(new Guest(bars.get(1).getEndX() + 5 + i * 70, OnBar.BAR2, bars, mugs, speedMutator));
+		}
+
+		for (int i = 0; i < random.generateInt(1, actualLevel); i++) {
+			bar3.add(new Guest(bars.get(2).getEndX() + 5 + i * 70, OnBar.BAR3, bars, mugs, speedMutator));
+		}
+
+		for (int i = 0; i < random.generateInt(1, actualLevel); i++) {
+			bar4.add(new Guest(bars.get(3).getEndX() + 5 + i * 70, OnBar.BAR4, bars, mugs, speedMutator));
+		}
+
+		allGuests.add(bar1);
+		allGuests.add(bar2);
+		allGuests.add(bar3);
+		allGuests.add(bar4);
 	}
 
 	private boolean isLevelCompleted() {
-		return guests.isEmpty();
+		for (List<Guest> list : allGuests) {
+			if (!list.isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private boolean isGameOver() {
@@ -69,9 +99,12 @@ public class GameStateManager {
 	}
 
 	public void restartLevel() {
-		guests.clear();
+		for (List<Guest> list : allGuests) {
+			list.clear();
+		}
+
 		mugs.clear();
-		addGuests();
+		initGuests();
 	}
 
 	public void removeAllRemainingMugs() {
@@ -88,22 +121,29 @@ public class GameStateManager {
 	}
 
 	private boolean isAngryGuestInTheList() {
-		for (Guest guest : guests) {
-			if (guest.getState() == GuestState.ANGRY) {
-				return true;
+		for (List<Guest> list : allGuests) {
+			for (Guest guest : list) {
+				if (guest.getState() == GuestState.ANGRY) {
+					return true;
+				}
 			}
 		}
+
 		return false;
 	}
 
 	public void removeGuests() {
-		Iterator<Guest> guestListIterator = guests.iterator();
-		while (guestListIterator.hasNext()) {
-			Guest guest = guestListIterator.next();
-			if (guest.isRemovable()) {
-				guestListIterator.remove();
+		for (List<Guest> list : allGuests) {
+			Iterator<Guest> guestListIterator = list.iterator();
+			while (guestListIterator.hasNext()) {
+				Guest guest = guestListIterator.next();
+				if (guest.isRemovable()) {
+					guestListIterator.remove();
+				}
 			}
+
 		}
+
 	}
 
 	public void removeMugs() {
@@ -116,30 +156,24 @@ public class GameStateManager {
 		}
 	}
 
-//	public void respawnPlayer() {
-//		
-//		player = new Player(40, 460, keyListener, bars, mugs);
-//		player.setWidth(40);
-//		player.setHeight(80);
-//	}
-
-	public void checkCatches(Player player) {
-		for (Guest guest : guests) {
-			switch (guest.getState()) {
-			case IN_COME:
-				if (isMugCatchedByGuest(guest)) {
-					gameStats.addScore(100);
+	public void checkCatchesByGuestAndPlayer(Player player) {
+		for (List<Guest> list : allGuests) {
+			for (Guest guest : list) {
+				switch (guest.getState()) {
+				case IN_COME:
+					if (isMugCatchedByGuest(guest)) {
+						gameStats.addScore(100);
+					}
+					break;
+				case IN_WAIT:
+					if (isMugCatchedByGuest(guest)) {
+						gameStats.addScore(100);
+					}
+					break;
+				default:
+					break;
 				}
-				break;
-			case IN_WAIT:
-				if (isMugCatchedByGuest(guest)) {
-					gameStats.addScore(100);
-				}
-				break;
-			default:
-				break;
 			}
-
 		}
 
 		if (isMugCatchedByPlayer(player)) {

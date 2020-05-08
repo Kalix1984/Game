@@ -2,8 +2,6 @@ package application.menu;
 
 
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
 public class Panel extends BorderPane {
 

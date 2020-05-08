@@ -1,14 +1,13 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.guest.Guest;
 import application.entities.mug.Mug;
 import application.entities.player.Player;
-import application.entities.properties.OnBar;
 import application.finitestatemachine.GameState;
 import application.finitestatemachine.GameStateManager;
 import application.gamepanel.GamePanel;
@@ -23,7 +22,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
@@ -45,7 +43,8 @@ public class GameViewManager {
 	private GameStats gameStats;
 
 	public List<Bar> bars = new ArrayList<>();
-	private List<Guest> guests = new ArrayList<>();
+
+	private List<List<Guest>> allGuests = new LinkedList<>();
 	private List<Mug> mugs = new ArrayList<>();
 	private List<Door> doors = new ArrayList<>();
 
@@ -80,13 +79,13 @@ public class GameViewManager {
 	public void changeToGameStage(Stage menuStage) {
 		this.menuStage = menuStage;
 		menuStage.hide();
-		
+
 		createGameElements();
 		createGameLoop();
 		gamePane.getChildren().add(canvas);
 		gameStage.show();
 	}
-	
+
 	private void changeToMenuStage() {
 		new Main();
 	}
@@ -95,8 +94,8 @@ public class GameViewManager {
 		player = new Player(40, 460, keyListener, bars, mugs);
 		player.setWidth(40);
 		player.setHeight(80);
-		
 	}
+
 	private void createGameLoop() {
 		lastNanoTime = System.nanoTime();
 
@@ -107,8 +106,6 @@ public class GameViewManager {
 				double deltaTime = (currentNanoTime - lastNanoTime) / 1_000_000_000.0;
 				lastNanoTime = currentNanoTime;
 
-				System.out.println(player);
-				
 				// clear
 				clearGameSpace();
 
@@ -116,18 +113,20 @@ public class GameViewManager {
 				case INIT_LEVEL:
 					gameStats.levelUP();
 					gameStateManager.removeAllRemainingMugs();
-					
+
 					createPlayerAtRespawnPoint();
-					
-					gameStateManager.addGuests();
+
+					gameStateManager.initGuests();
+
 					gameStateManager.changeGameState(GameState.START_LEVEL);
 					break;
-					
+
 				case START_LEVEL:
 					// render
 					renderGameObjects();
 
-					gamePanel.render(gameSpace,  "A(z) " + gameStats.getLevel() + ". szint következik.\nKezdéshez nyomj ENTER-t");
+					gamePanel.render(gameSpace,
+							"A(z) " + gameStats.getLevel() + ". szint következik.\nKezdéshez nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
 						gameStateManager.changeGameState(GameState.RUNNING);
@@ -137,37 +136,31 @@ public class GameViewManager {
 
 				case RUNNING:
 					// update
-					player.update(deltaTime);
-
-					for (Guest guest : guests) {
-						guest.update(deltaTime);
-					}
-
-					for (Mug mug : mugs) {
-						mug.update(deltaTime);
-					}
-
+					updateGameObjects(deltaTime);
+					// render
 					renderGameObjects();
 
 					// check cases
-					gameStateManager.checkCatches(player);
+					gameStateManager.checkCatchesByGuestAndPlayer(player);
 
 					// remove "dead" things
 					gameStateManager.removeGuests();
 					gameStateManager.removeMugs();
-					
-					//change state
+
+					// change state
 					gameStateManager.changeGameState(gameStateManager.checkGameState());
 
 					break;
 
 				case LOSE_LIFE:
+					// render
 					renderGameObjects();
-					
+
 					gamePanel.render(gameSpace, "Életet vesztettél, nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
 						createPlayerAtRespawnPoint();
+
 						gameStats.looseLife();
 						gameStateManager.restartLevel();
 						gameStateManager.changeGameState(GameState.RUNNING);
@@ -186,18 +179,32 @@ public class GameViewManager {
 					}
 					break;
 
-					
 				default:
 					break;
 				}
 			}
 
+			private void updateGameObjects(double deltaTime) {
+				player.update(deltaTime);
+
+				for (List<Guest> list : allGuests) {
+					for (Guest guest : list) {
+						guest.update(deltaTime);
+					}
+				}
+
+				for (Mug mug : mugs) {
+					mug.update(deltaTime);
+				}
+			}
 
 			private void renderGameObjects() {
-				for (Guest guest : guests) {
-					guest.render(gameSpace);
+				for (List<Guest> list : allGuests) {
+					for (Guest guest : list) {
+						guest.render(gameSpace);
+					}
 				}
-				
+
 				for (Bar bar : bars) {
 					bar.render(gameSpace);
 				}
@@ -206,12 +213,12 @@ public class GameViewManager {
 					mug.render(gameSpace);
 				}
 
-				for (Door door : doors) {
-					door.render(gameSpace);
-				}
+//				for (Door door : doors) {
+//					door.render(gameSpace);
+//				}
 
 				player.render(gameSpace);
-				
+
 				scoreIndicator.render(gameSpace);
 				levelIndicator.render(gameSpace);
 				lifeIndicator.render(gameSpace);
@@ -242,10 +249,9 @@ public class GameViewManager {
 			doors.add(new Door(bar));
 		}
 
-		gameStateManager = new GameStateManager(mugs, guests, bars, gameStats);
+		gameStateManager = new GameStateManager(mugs, allGuests, bars, gameStats);
 		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
 
 	}
 
-	
 }

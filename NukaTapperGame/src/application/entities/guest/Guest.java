@@ -2,7 +2,6 @@ package application.entities.guest;
 
 import java.util.List;
 
-import application.RandomGenerator;
 import application.entities.Bar;
 import application.entities.Mob;
 import application.entities.motionmodifiers.CountdownTimer;
@@ -10,7 +9,6 @@ import application.entities.motionmodifiers.Route;
 import application.entities.mug.Mug;
 import application.entities.properties.Boundary;
 import application.entities.properties.OnBar;
-import application.finitestatemachine.GameState;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -24,8 +22,9 @@ public class Guest extends Mob {
 	private CountdownTimer timer;
 	private List<Mug> mugs;
 	private List<Bar> bars;
+	
 
-	public Guest(OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed) {
+	public Guest(double posX, OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed) {
 		this.speed = speed;
 		state = GuestState.ENTER_WAIT;
 		this.actualBar = actualBar;
@@ -34,12 +33,16 @@ public class Guest extends Mob {
 
 		setWidth(40);
 		setHeight(80);
-
-		setPositionX(bars.get(actualBar.getIndex()).getEndX() + 5);
+		
+		setPositionX(posX);
 		setPositionY(bars.get(actualBar.getIndex()).getPositionY() - 50);
 
 		boundary = new Boundary(bars.get(actualBar.getIndex()).getStarX(), bars.get(actualBar.getIndex()).getEndX());
 
+	}
+
+	public OnBar getActualBar() {
+		return actualBar;
 	}
 
 	public GuestState getState() {
@@ -146,7 +149,11 @@ public class Guest extends Mob {
 
 	@Override
 	public void render(GraphicsContext gameSpace) {
+		
+		
 		gameSpace.setFill(Color.GREEN);
+		
+		
 		gameSpace.setImageSmoothing(true);
 		gameSpace.fillRect(getPositionX(), getPositionY(), getWidth(), getHeight());
 		

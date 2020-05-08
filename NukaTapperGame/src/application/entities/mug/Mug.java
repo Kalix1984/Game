@@ -3,11 +3,11 @@ package application.entities.mug;
 import java.util.List;
 
 import application.entities.Bar;
-import application.entities.Boundary;
 import application.entities.Mob;
-import application.entities.OnBar;
 import application.entities.guest.Guest;
 import application.entities.player.Player;
+import application.entities.properties.Boundary;
+import application.entities.properties.OnBar;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Mug extends Mob {
@@ -55,7 +55,6 @@ public class Mug extends Mob {
 			}else {
 				state = MugState.BREAK_ONWALL;
 			}
-
 			break;
 			
 		case BACKWARD:

@@ -1,19 +1,21 @@
-package application.gamestatemachine;
+package application.finitestatemachine;
 
 import java.util.Iterator;
 import java.util.List;
 
 import application.GameStats;
 import application.entities.Bar;
-import application.entities.OnBar;
 import application.entities.guest.Guest;
 import application.entities.guest.GuestState;
 import application.entities.mug.Mug;
 import application.entities.mug.MugState;
 import application.entities.player.Player;
+import application.entities.properties.OnBar;
+import application.input.Keyboard;
 
 public class GameStateManager {
 	private Player player;
+	private Keyboard keyListener;
 	private List<Mug> mugs;
 	private List<Guest> guests;
 	private List<Bar> bars;
@@ -21,13 +23,18 @@ public class GameStateManager {
 
 	private GameState gameState;
 
-	public GameStateManager(Player player, List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
+	public GameStateManager(Player player, Keyboard keyListener, List<Mug> mugs, List<Guest> guests, List<Bar> bars, GameStats gameStats) {
 		this.player = player;
+		this.keyListener = keyListener;
 		this.mugs = mugs;
 		this.guests = guests;
 		this.bars = bars;
 		this.gameStats = gameStats;
 		this.gameState = GameState.START_LEVEL;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public GameState getGameState() {
@@ -69,8 +76,9 @@ public class GameStateManager {
 	public void restartLevel() {
 		guests.clear();
 		mugs.clear();
+		addGuests();
 	}
-	
+
 	public void removeAllRemainingMugs() {
 		mugs.clear();
 	}
@@ -113,15 +121,22 @@ public class GameStateManager {
 		}
 	}
 
+	public void respawnPlayer() {
+		player = null;
+		player = new Player(40, 460, keyListener, bars, mugs);
+		player.setWidth(40);
+		player.setHeight(80);
+	}
+
 	public void checkCatches() {
 		for (Guest guest : guests) {
 			switch (guest.getState()) {
-			case IN_COME_MOTION:
+			case IN_COME:
 				if (isMugCatchedByGuest(guest)) {
 					gameStats.addScore(100);
 				}
 				break;
-			case IN_COME_IDLE:
+			case IN_WAIT:
 				if (isMugCatchedByGuest(guest)) {
 					gameStats.addScore(100);
 				}
@@ -140,7 +155,7 @@ public class GameStateManager {
 	private boolean isMugCatchedByGuest(Guest guest) {
 		for (Mug mug : mugs) {
 			if (mug.getState() == MugState.FORWARD && guest.intersects(mug)) {
-				guest.setState(GuestState.ENTER_LEAVE_IN_MOTION);
+				guest.setState(GuestState.ENTER_LEAVE);
 				mug.setState(MugState.IN_GUEST_HANDS);
 
 				return true;

@@ -1,4 +1,4 @@
-package application.gamestatemachine;
+package application.finitestatemachine;
 
 public enum GameState {
 	START_LEVEL,

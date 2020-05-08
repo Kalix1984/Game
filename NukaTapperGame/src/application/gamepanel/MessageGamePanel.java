@@ -38,7 +38,7 @@ public class MessageGamePanel extends Entity implements GamePanel {
 		gameSpace.setFont(new Font(fontType, fontSize));
 		gameSpace.setFill(fontColor);
 		
-		gameSpace.fillText(text, 250, 300);
+		gameSpace.fillText(text, getPositionX() + 50, getPositionY() + 350, 300);
 	}
 
 	@Override

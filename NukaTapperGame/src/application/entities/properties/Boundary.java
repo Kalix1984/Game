@@ -1,4 +1,4 @@
-package application.entities;
+package application.entities.properties;
 
 public class Boundary {
 	private double left;

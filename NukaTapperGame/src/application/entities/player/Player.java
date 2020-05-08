@@ -3,11 +3,11 @@ package application.entities.player;
 import java.util.List;
 
 import application.entities.Bar;
-import application.entities.Boundary;
-import application.entities.Direction;
 import application.entities.Mob;
-import application.entities.OnBar;
 import application.entities.mug.Mug;
+import application.entities.properties.Boundary;
+import application.entities.properties.Direction;
+import application.entities.properties.OnBar;
 import application.input.Keyboard;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -40,7 +40,10 @@ public class Player extends Mob {
 	}
 
 	private boolean canTapBeer() {
-		return getPositionX() > boundary.getLeft() - 5 && getPositionX() <= boundary.getLeft();
+		
+		System.out.println(boundary.getLeft() - 5  + " és " + boundary.getLeft() + 5 + " játékos: " + getPositionX());
+		
+		return getPositionX() > boundary.getLeft() - 5 && getPositionX() < boundary.getLeft() + 5;
 	}
 
 	@Override

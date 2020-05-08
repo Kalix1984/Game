@@ -4,13 +4,13 @@ import java.util.List;
 
 import application.RandomGenerator;
 import application.entities.Bar;
-import application.entities.Boundary;
 import application.entities.Mob;
-import application.entities.OnBar;
 import application.entities.motionmodifiers.CountdownTimer;
 import application.entities.motionmodifiers.Route;
 import application.entities.mug.Mug;
-import application.gamestatemachine.GameState;
+import application.entities.properties.Boundary;
+import application.entities.properties.OnBar;
+import application.finitestatemachine.GameState;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -27,7 +27,7 @@ public class Guest extends Mob {
 
 	public Guest(OnBar actualBar, List<Bar> bars, List<Mug> mugs, double speed) {
 		this.speed = speed;
-		state = GuestState.ENTER_COME_IDLE;
+		state = GuestState.ENTER_WAIT;
 		this.actualBar = actualBar;
 		this.mugs = mugs;
 		this.bars = bars;
@@ -63,61 +63,61 @@ public class Guest extends Mob {
 	public void move(double deltaTime) {
 
 		switch (state) {
-		case ENTER_COME_IDLE:
+		case ENTER_WAIT:
 			timer = new CountdownTimer(2);
 			setVelocityX(0);
-			state = GuestState.IN_COME_IDLE;
+			state = GuestState.IN_WAIT;
 			break;
 
-		case IN_COME_IDLE:
+		case IN_WAIT:
 			if (!timer.hasTimeExpired()) {
 				timer.decreaseTime(deltaTime);
 			} else {
-				state = GuestState.EXIT_COME_IDLE;
+				state = GuestState.EXIT_WAIT;
 			}
 			break;
 
-		case EXIT_COME_IDLE:
+		case EXIT_WAIT:
 			timer = null;
-			state = GuestState.ENTER_COME_MOTION;
+			state = GuestState.ENTER_COME;
 			break;
 
-		case ENTER_COME_MOTION:
+		case ENTER_COME:
 			route = new Route(30, 70);
-			state = GuestState.IN_COME_MOTION;
+			state = GuestState.IN_COME;
 			break;
 
-		case IN_COME_MOTION:
+		case IN_COME:
 			if (!route.isDestinationReached() && getPositionX() > boundary.getLeft()) {
 				setVelocityX(-1 * speed);
 				route.decrease(getVelocityX() * deltaTime);
 			} else if (route.isDestinationReached() && getPositionX() > boundary.getLeft()) {
-				state = GuestState.EXIT_COME_MOTION;
+				state = GuestState.EXIT_COME;
 			} else if (getPositionX() <= boundary.getLeft()) {
 				state = GuestState.ANGRY;
 			}
 			break;
 
-		case EXIT_COME_MOTION:
+		case EXIT_COME:
 			route = null;
-			state = GuestState.ENTER_COME_IDLE;
+			state = GuestState.ENTER_WAIT;
 			break;
 
-		case ENTER_LEAVE_IN_MOTION:
+		case ENTER_LEAVE:
 			route = new Route(150);
-			state = GuestState.IN_LEAVE_IN_MOTION;
+			state = GuestState.IN_LEAVE;
 			break;
 
-		case IN_LEAVE_IN_MOTION:
+		case IN_LEAVE:
 			if (!route.isDestinationReached() && getPositionX() < boundary.getRight()) {
 				setVelocityX(200);
 				route.decrease(getVelocityX() * deltaTime * -1);
 			} else {
-				state = GuestState.EXIT_LEAVE_IN_MOTION;
+				state = GuestState.EXIT_LEAVE;
 			}
 			break;
 
-		case EXIT_LEAVE_IN_MOTION:
+		case EXIT_LEAVE:
 			route = null;
 
 			if (getPositionX() >= boundary.getRight()) {
@@ -125,14 +125,12 @@ public class Guest extends Mob {
 				setRemovable(true);
 			} else {
 				state = GuestState.ASK_MORE_AND_COME;
-//				state = GuestState.ENTER_COME_IDLE;
 			}
 			break;
 
 		case ASK_MORE_AND_COME:
-//			setVelocityX(0);
 			returnEmptyMug();
-			state = GuestState.ENTER_COME_IDLE;
+			state = GuestState.ENTER_WAIT;
 			break;
 		default:
 			break;

@@ -1,5 +1,7 @@
 package application.entities;
 
+import application.entities.properties.Direction;
+
 public abstract class Mob extends Entity{
 	private Direction dir;
 	private boolean isMoving = false;

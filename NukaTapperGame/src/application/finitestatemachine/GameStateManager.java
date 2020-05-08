@@ -43,14 +43,14 @@ public class GameStateManager {
 
 	public GameState checkGameState() {
 		if (isBrokenMugInTheList() || isAngryGuestInTheList() && !isGameOver()) {
-			return GameState.LOSE_LIFE;
+			return GameState.LOSE_LIFE_MESSAGE;
 		} else if (isGameOver()) {
-			return GameState.GAME_OVER;
+			return GameState.GAME_OVER_MESSAGE;
 		} else if (isLevelCompleted()) {
 			return GameState.INIT_LEVEL;
 		}
 
-		return GameState.RUNNING;
+		return GameState.GAME_IN_PROGRESS;
 	}
 
 	public void initGuests() {

@@ -3,6 +3,8 @@ package application;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import application.entities.Background;
 import application.entities.Bar;
 import application.entities.Door;
 import application.entities.guest.Guest;
@@ -38,6 +40,8 @@ public class GameViewManager {
 	private Scene gameScene;
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
+
+	private Background bg;
 
 	private GameStateManager gameStateManager;
 	private GameStats gameStats;
@@ -87,7 +91,9 @@ public class GameViewManager {
 	}
 
 	private void changeToMenuStage() {
-		new Main();
+		menuStage.show();
+		gameStage.hide();
+		gameStage = null;
 	}
 
 	private void createPlayerAtRespawnPoint() {
@@ -109,6 +115,8 @@ public class GameViewManager {
 				// clear
 				clearGameSpace();
 
+				bg.render(gameSpace);
+
 				switch (gameStateManager.getGameState()) {
 				case INIT_LEVEL:
 					gameStats.levelUP();
@@ -118,10 +126,10 @@ public class GameViewManager {
 
 					gameStateManager.initGuests();
 
-					gameStateManager.changeGameState(GameState.START_LEVEL);
+					gameStateManager.changeGameState(GameState.START_LEVEL_MESSAGE);
 					break;
 
-				case START_LEVEL:
+				case START_LEVEL_MESSAGE:
 					// render
 					renderGameObjects();
 
@@ -129,12 +137,12 @@ public class GameViewManager {
 							"A(z) " + gameStats.getLevel() + ". szint következik.\nKezdéshez nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
-						gameStateManager.changeGameState(GameState.RUNNING);
+						gameStateManager.changeGameState(GameState.GAME_IN_PROGRESS);
 					}
 
 					break;
 
-				case RUNNING:
+				case GAME_IN_PROGRESS:
 					// update
 					updateGameObjects(deltaTime);
 					// render
@@ -152,7 +160,7 @@ public class GameViewManager {
 
 					break;
 
-				case LOSE_LIFE:
+				case LOSE_LIFE_MESSAGE:
 					// render
 					renderGameObjects();
 
@@ -163,18 +171,19 @@ public class GameViewManager {
 
 						gameStats.looseLife();
 						gameStateManager.restartLevel();
-						gameStateManager.changeGameState(GameState.RUNNING);
+						gameStateManager.changeGameState(GameState.GAME_IN_PROGRESS);
 					}
 					break;
 
-				case GAME_OVER:
+				case GAME_OVER_MESSAGE:
 					// render
 					renderGameObjects();
 
 					gamePanel.render(gameSpace, "Vége a játéknak, nyomj ENTER-t");
 
 					if (gamePanel.isExitKeyPressed()) {
-						System.out.println("GAME OVER");
+						gameLoop.stop();
+						
 						changeToMenuStage();
 					}
 					break;
@@ -183,49 +192,48 @@ public class GameViewManager {
 					break;
 				}
 			}
-
-			private void updateGameObjects(double deltaTime) {
-				player.update(deltaTime);
-
-				for (List<Guest> list : allGuests) {
-					for (Guest guest : list) {
-						guest.update(deltaTime);
-					}
-				}
-
-				for (Mug mug : mugs) {
-					mug.update(deltaTime);
-				}
-			}
-
-			private void renderGameObjects() {
-				for (List<Guest> list : allGuests) {
-					for (Guest guest : list) {
-						guest.render(gameSpace);
-					}
-				}
-
-				for (Bar bar : bars) {
-					bar.render(gameSpace);
-				}
-
-				for (Mug mug : mugs) {
-					mug.render(gameSpace);
-				}
-
-//				for (Door door : doors) {
-//					door.render(gameSpace);
-//				}
-
-				player.render(gameSpace);
-
-				scoreIndicator.render(gameSpace);
-				levelIndicator.render(gameSpace);
-				lifeIndicator.render(gameSpace);
-			}
 		};
 		gameLoop.start();
+	}
 
+	private void updateGameObjects(double deltaTime) {
+		player.update(deltaTime);
+
+		for (List<Guest> list : allGuests) {
+			for (Guest guest : list) {
+				guest.update(deltaTime);
+			}
+		}
+
+		for (Mug mug : mugs) {
+			mug.update(deltaTime);
+		}
+	}
+
+	private void renderGameObjects() {
+		for (List<Guest> list : allGuests) {
+			for (Guest guest : list) {
+				guest.render(gameSpace);
+			}
+		}
+
+		for (Bar bar : bars) {
+			bar.render(gameSpace);
+		}
+
+		for (Mug mug : mugs) {
+			mug.render(gameSpace);
+		}
+
+		for (Door door : doors) {
+			door.render(gameSpace);
+		}
+
+		player.render(gameSpace);
+
+		scoreIndicator.render(gameSpace);
+		levelIndicator.render(gameSpace);
+		lifeIndicator.render(gameSpace);
 	}
 
 	private void clearGameSpace() {
@@ -233,6 +241,8 @@ public class GameViewManager {
 	}
 
 	private void createGameElements() {
+
+		bg = new Background();
 
 		gameStats = new GameStats();
 

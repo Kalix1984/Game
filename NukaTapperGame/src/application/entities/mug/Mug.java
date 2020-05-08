@@ -19,17 +19,20 @@ public class Mug extends Mob {
 		this.bounds = new Boundary(bars.get(actualBar.getIndex()).getStarX() - 30,
 				bars.get(actualBar.getIndex()).getEndX() - 30);
 
-		setImage("beer.png");
+		setWidth(30);
+		setHeight(50);
 		
 		if (owner instanceof Player) {
 			setPosition(owner.getPositionX(), owner.getPositionY());
 			speed = 200; 
 			state = MugState.FORWARD;
+			setImage("beer.png");
 			
 		} else if (owner instanceof Guest) {
 			setPosition(owner.getPositionX()- getWidth() - 5, owner.getPositionY() + 10);
 			speed = -50;
 			state = MugState.BACKWARD;
+			setImage("empty.png");
 		}
 	}
 	

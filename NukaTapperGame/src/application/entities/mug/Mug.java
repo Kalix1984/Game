@@ -20,16 +20,16 @@ public class Mug extends Mob {
 				bars.get(actualBar.getIndex()).getEndX() - 30);
 
 		setWidth(30);
-		setHeight(50);
+		setHeight(44);
 		
 		if (owner instanceof Player) {
-			setPosition(owner.getPositionX(), owner.getPositionY());
+			setPosition(owner.getPositionX(), owner.getPositionY() + 5);
 			speed = 200; 
 			state = MugState.FORWARD;
 			setImage("beer.png");
 			
 		} else if (owner instanceof Guest) {
-			setPosition(owner.getPositionX()- getWidth() - 5, owner.getPositionY() + 10);
+			setPosition(owner.getPositionX()- getWidth() - 5, owner.getPositionY() + 15);
 			speed = -50;
 			state = MugState.BACKWARD;
 			setImage("empty.png");

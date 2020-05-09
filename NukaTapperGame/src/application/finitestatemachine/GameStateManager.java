@@ -42,10 +42,14 @@ public class GameStateManager {
 	}
 
 	public GameState checkGameState() {
-		if (isBrokenMugInTheList() || isAngryGuestInTheList() && !isGameOver()) {
-			return GameState.LOSE_LIFE_MESSAGE;
-		} else if (isGameOver()) {
-			return GameState.GAME_OVER_MESSAGE;
+		if (isBrokenMugInTheList() || isAngryGuestInTheList()) {
+			gameStats.looseLife();
+
+			if (hasRemainingLife()) {
+				return GameState.LOSE_LIFE_MESSAGE;
+			} else {
+				return GameState.GAME_OVER_MESSAGE;
+			}
 		} else if (isLevelCompleted()) {
 			return GameState.INIT_LEVEL;
 		}
@@ -94,8 +98,8 @@ public class GameStateManager {
 		return true;
 	}
 
-	private boolean isGameOver() {
-		return gameStats.getLife() == 0;
+	private boolean hasRemainingLife() {
+		return gameStats.getLife() > 0;
 	}
 
 	public void restartLevel() {

@@ -7,13 +7,14 @@ import java.util.List;
 import application.entities.Background;
 import application.entities.Bar;
 import application.entities.Door;
+import application.entities.Tap;
 import application.entities.guest.Guest;
 import application.entities.mug.Mug;
 import application.entities.player.Player;
 import application.finitestatemachine.GameState;
 import application.finitestatemachine.GameStateManager;
 import application.gamepanel.GamePanel;
-import application.gamepanel.MessageGamePanel;
+import application.gamepanel.InfoPanel;
 import application.indicatorsview.Indicator;
 import application.indicatorsview.LevelIndicator;
 import application.indicatorsview.LifeIndicator;
@@ -30,7 +31,7 @@ import javafx.stage.Stage;
 public class GameViewManager {
 	AnimationTimer gameLoop;
 	private long lastNanoTime;
-
+	
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 
@@ -41,12 +42,13 @@ public class GameViewManager {
 	private Canvas canvas;
 	private GraphicsContext gameSpace;
 
-	private Background bg;
+	private Background background;
 
 	private GameStateManager gameStateManager;
 	private GameStats gameStats;
 
 	public List<Bar> bars = new ArrayList<>();
+	public List<Tap> taps = new ArrayList<>();
 
 	private List<List<Guest>> allGuests = new LinkedList<>();
 	private List<Mug> mugs = new ArrayList<>();
@@ -115,7 +117,7 @@ public class GameViewManager {
 				// clear
 				clearGameSpace();
 
-				bg.render(gameSpace);
+				background.render(gameSpace);
 
 				switch (gameStateManager.getGameState()) {
 				case INIT_LEVEL:
@@ -133,8 +135,8 @@ public class GameViewManager {
 					// render
 					renderGameObjects();
 
-					gamePanel.render(gameSpace,
-							"A(z) " + gameStats.getLevel() + ". szint következik.\nKezdéshez nyomj ENTER-t");
+					gamePanel.setLabel("Get ready to " + gameStats.getLevel() + ". level\n\nPress ENTER");
+					gamePanel.render(gameSpace);
 
 					if (gamePanel.isExitKeyPressed()) {
 						gameStateManager.changeGameState(GameState.GAME_IN_PROGRESS);
@@ -164,12 +166,14 @@ public class GameViewManager {
 					// render
 					renderGameObjects();
 
-					gamePanel.render(gameSpace, "Életet vesztettél, nyomj ENTER-t");
+					
+					String singularOrPlural = gameStats.getLife() == 1 ? " life" : " lifes" ;
+					gamePanel.setLabel("You have " +  gameStats.getLife() + singularOrPlural + " left\n\nPress ENTER");
+					gamePanel.render(gameSpace);
 
 					if (gamePanel.isExitKeyPressed()) {
 						createPlayerAtRespawnPoint();
-
-						gameStats.looseLife();
+						
 						gameStateManager.restartLevel();
 						gameStateManager.changeGameState(GameState.GAME_IN_PROGRESS);
 					}
@@ -179,7 +183,8 @@ public class GameViewManager {
 					// render
 					renderGameObjects();
 
-					gamePanel.render(gameSpace, "Vége a játéknak, nyomj ENTER-t");
+					gamePanel.setLabel("Game Over\n\nPress ENTER");
+					gamePanel.render(gameSpace);
 
 					if (gamePanel.isExitKeyPressed()) {
 						gameLoop.stop();
@@ -228,6 +233,10 @@ public class GameViewManager {
 		for (Door door : doors) {
 			door.render(gameSpace);
 		}
+		
+		for (Tap tap : taps) {
+			tap.render(gameSpace);
+		}
 
 		player.render(gameSpace);
 
@@ -242,25 +251,26 @@ public class GameViewManager {
 
 	private void createGameElements() {
 
-		bg = new Background();
+		background = new Background();
 
 		gameStats = new GameStats();
 
-		scoreIndicator = new ScoreIndicator(20, 50, gameStats);
-		levelIndicator = new LevelIndicator(680, 50, gameStats);
-		lifeIndicator = new LifeIndicator(10, 60, gameStats);
+		scoreIndicator = new ScoreIndicator(40, 50, gameStats);
+		levelIndicator = new LevelIndicator(600, 50, gameStats);
+		lifeIndicator = new LifeIndicator(40, 60, gameStats);
 
-		bars.add(new Bar(450, 40, 175, 200));
-		bars.add(new Bar(500, 40, 150, 300));
-		bars.add(new Bar(550, 40, 125, 400));
-		bars.add(new Bar(600, 40, 100, 500));
+		bars.add(new Bar(490, 40, 175, 200));
+		bars.add(new Bar(540, 40, 150, 300));
+		bars.add(new Bar(590, 40, 125, 400));
+		bars.add(new Bar(640, 40, 100, 500));
 
 		for (Bar bar : bars) {
 			doors.add(new Door(bar));
+			taps.add(new Tap(bar));
 		}
 
 		gameStateManager = new GameStateManager(mugs, allGuests, bars, gameStats);
-		gamePanel = new MessageGamePanel(200, 100, 400, 400, keyListener);
+		gamePanel = new InfoPanel(0, 200, 800, 200, keyListener);
 
 	}
 

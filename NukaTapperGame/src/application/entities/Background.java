@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Background extends Entity{
 	
 	public Background() {
-		setImage("bg.png");
+		setImage("background.png");
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class Menu {
 
 		MenuButton startButton = new MenuButton("Játék indítása");
 		MenuButton toplistButton = new MenuButton("Toplista");
-		MenuButton settingsButton = new MenuButton("Beállítások");
+//		MenuButton settingsButton = new MenuButton("Beállítások");
 		MenuButton exitButton = new MenuButton("Kilépés");
 
 		startButton.setOnAction(e -> {
@@ -41,17 +41,17 @@ public class Menu {
 			mainStage.getScene().setRoot(toplist.getRootPane());
 		});
 
-		settingsButton.setOnAction(e -> {
-			Settings settings = new Settings(mainStage);
-			mainStage.getScene().setRoot(settings.getRootPane());
-		});
+//		settingsButton.setOnAction(e -> {
+//			Settings settings = new Settings(mainStage);
+//			mainStage.getScene().setRoot(settings.getRootPane());
+//		});
 
 		exitButton.setOnAction(e -> {
 			mainStage.close();
 			System.out.println("kilépett(Kilépés gombbal)...menteni kell!");
 		});
 
-		box.getChildren().addAll(startButton, toplistButton, settingsButton, exitButton);
+		box.getChildren().addAll(startButton, toplistButton, exitButton);
 		box.setAlignment(Pos.CENTER);
 
 		layout.getChildren().add(box);

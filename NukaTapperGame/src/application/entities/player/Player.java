@@ -22,6 +22,8 @@ public class Player extends Mob {
 
 	public Player(double posX, double posY, Keyboard input, List<Bar> bars, List<Mug> mugs) {
 
+		setImage("player.png");
+		
 		setPosition(posX, posY);
 		this.input = input;
 
@@ -139,12 +141,7 @@ public class Player extends Mob {
 
 	@Override
 	public void render(GraphicsContext gameSpace) {
-		gameSpace.setFill(Color.BLUE);
-		gameSpace.setImageSmoothing(true);
-		gameSpace.fillRect(getPositionX(), getPositionY(), getWidth(), getHeight());
-		
-		
-//		gameSpace.drawImage(getImage(), getPositionX(), getPositionY());
+		gameSpace.drawImage(getImage(), getPositionX(), getPositionY());
 		
 	}
 

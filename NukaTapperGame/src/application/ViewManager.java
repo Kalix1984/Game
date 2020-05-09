@@ -1,5 +1,9 @@
 package application;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import application.menu.Menu;
 import application.menu.MenuButton;
 import javafx.geometry.Pos;
@@ -9,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ViewManager {
@@ -19,6 +25,8 @@ public class ViewManager {
 
 	static final int WIDTH = 800;
 	static final int HEIGHT = 600;
+	
+	public final static String FONT_NAME = "res/Heroes Legend.ttf";
 
 	public ViewManager() {
 
@@ -57,13 +65,23 @@ public class ViewManager {
 	public Parent generateSplashScreen() {
 		StackPane layout = new StackPane();
 		
-		VBox box = new VBox(10);
+		VBox box = new VBox(200);
 		box.setAlignment(Pos.CENTER);
 		
-		Rectangle rect = new Rectangle(400, 400, Color.BLUE);
-		MenuButton btn = new MenuButton("Tovább");
+		Text gameTitle = new Text("Nuka Tappper");
+		gameTitle.setFill(Color.ORANGE);
+		gameTitle.setStroke(Color.WHITE);
+		gameTitle.setStrokeWidth(5);
 		
-		box.getChildren().addAll(rect, btn);
+		try {
+			gameTitle.setFont(Font.loadFont(new FileInputStream(new File(FONT_NAME)), 60));
+		} catch (FileNotFoundException e) {
+			gameTitle.setFont(Font.font("Verdana", 25));
+		}
+		
+		MenuButton btn = new MenuButton("Start");
+		
+		box.getChildren().addAll(gameTitle, btn);
 		layout.getChildren().add(box);
 
 		btn.setOnAction(e -> {

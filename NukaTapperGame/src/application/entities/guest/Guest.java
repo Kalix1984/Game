@@ -31,8 +31,8 @@ public class Guest extends Mob {
 		this.mugs = mugs;
 		this.bars = bars;
 
-		setWidth(40);
-		setHeight(80);
+		
+		setImage("guest.png");
 		
 		setPositionX(posX);
 		setPositionY(bars.get(actualBar.getIndex()).getPositionY() - 50);
@@ -149,14 +149,7 @@ public class Guest extends Mob {
 
 	@Override
 	public void render(GraphicsContext gameSpace) {
-		
-		
-		gameSpace.setFill(Color.GREEN);
-		
-		
-		gameSpace.setImageSmoothing(true);
-		gameSpace.fillRect(getPositionX(), getPositionY(), getWidth(), getHeight());
-		
+		gameSpace.drawImage(getImage(), getPositionX(), getPositionY());
 	}
 
 }

@@ -23,7 +23,7 @@ public class Toplist {
 	private Parent generateToplist() {
 		AnchorPane layout = new AnchorPane();
 		
-		MenuButton backButton = new MenuButton("Vissza");
+		MenuButton backButton = new MenuButton("Back");
 		backButton.setAlignment(Pos.CENTER);
 		backButton.setOnAction(e -> {
 			Menu mainMenu = new Menu(mainStage);
@@ -37,7 +37,7 @@ public class Toplist {
 		header.setPadding(new Insets(5));
 		header.setStyle("-fx-background-color: #162455; -fx-background-radius: 10 10 0 0;");
 		
-		Text caption = new Text("Toplista");
+		Text caption = new Text("Toplist");
 		caption.setFont(new Font("Impact", 20));
 		caption.setFill(Color.web("#AFD8E2"));
 		header.getChildren().add(caption);

@@ -4,11 +4,8 @@ package application;
 
 import application.menu.Menu;
 import application.sql.DataBase;
-import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -60,6 +57,7 @@ public class ScoreSaverViewManager {
 			
 			Menu menu = new Menu(mainStage);
 			mainStage.getScene().setRoot(menu.getRootPane());
+			
 		
 		});
 

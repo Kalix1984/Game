@@ -20,6 +20,7 @@ import application.indicatorsview.LevelIndicator;
 import application.indicatorsview.LifeIndicator;
 import application.indicatorsview.ScoreIndicator;
 import application.input.Keyboard;
+import application.menu.Menu;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -92,12 +93,14 @@ public class GameViewManager {
 		gameStage.show();
 	}
 
-	private void changeToMenuStage() {
-		menuStage.show();
-		gameStage.hide();
-		gameStage = null;
-	}
-
+//	private void changeToMenuStage() {
+////		menuStage.show();
+//		
+//		
+//		gameStage.hide();
+//		gameStage = null;
+//	}
+	
 	private void createPlayerAtRespawnPoint() {
 		player = new Player(40, 460, keyListener, bars, mugs);
 		player.setWidth(40);
@@ -189,7 +192,13 @@ public class GameViewManager {
 					if (gamePanel.isExitKeyPressed()) {
 						gameLoop.stop();
 						
-						changeToMenuStage();
+						ScoreSaverViewManager scoreSaver = new ScoreSaverViewManager(gameStage);
+						scoreSaver.setScore(gameStats.getScore());
+						
+						gameStage.getScene().setRoot(scoreSaver.getRootPane());
+						
+						
+//						changeToMenuStage();
 					}
 					break;
 

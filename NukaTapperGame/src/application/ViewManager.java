@@ -3,7 +3,6 @@ package application;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import application.menu.Menu;
 import application.menu.MenuButton;
 import javafx.geometry.Pos;
@@ -12,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -37,9 +35,9 @@ public class ViewManager {
 		setupWindow();
 	}
 	
-	public ViewManager(Stage mainStage) {
-		this.mainStage = mainStage;
-	}
+//	public ViewManager(Stage mainStage) {
+//		this.mainStage = mainStage;
+//	}
 
 	private void setupWindow() {
 		mainStage.setScene(mainScene);
@@ -48,9 +46,9 @@ public class ViewManager {
 
 		mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		mainStage.setOnCloseRequest(e -> {
-			System.out.println("kilépett(X-el)...menteni kell!");
-		});
+//		mainStage.setOnCloseRequest(e -> {
+//			
+//		});
 	}
 
 	

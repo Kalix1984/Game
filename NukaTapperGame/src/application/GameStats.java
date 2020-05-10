@@ -1,13 +1,13 @@
 package application;
 
 public class GameStats {
-	private String playerName;
+//	private String playerName;
 	private int life;
 	private int score;
 	private int level;
 	
 	public GameStats() {
-		playerName = "ismeretlen";
+//		playerName = "ismeretlen";
 		life = 4;
 		level = 0;
 	}

@@ -1,5 +1,11 @@
 package application.menu;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
+import application.sql.DataBase;
+import application.sql.Winner;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -12,8 +18,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Toplist {
+	public final static String FONT_NAME = "res/Heroes Legend.ttf";
 	private final Parent rootPane;
 	private final Stage mainStage;
+	public DataBase db = new DataBase(); 
 
 	public Toplist(Stage mainStage) {
 		this.rootPane = generateToplist();
@@ -34,20 +42,28 @@ public class Toplist {
 		Panel toplistPanel = new Panel(250, 200, 260, 150);
 		
 		StackPane header = new StackPane();
-		header.setPadding(new Insets(5));
+		header.setPadding(new Insets(15));
 		header.setStyle("-fx-background-color: #162455; -fx-background-radius: 10 10 0 0;");
 		
 		Text caption = new Text("Toplist");
-		caption.setFont(new Font("Impact", 20));
+//		caption.setFont(new Font("Impact", 20));
 		caption.setFill(Color.web("#AFD8E2"));
+		
+		try {
+			caption.setFont(Font.loadFont(new FileInputStream(new File(FONT_NAME)), 20));
+		} catch (FileNotFoundException e) {
+			caption.setFont(Font.font("Verdana", 25));
+		}
+		
 		header.getChildren().add(caption);
 		
-		//tesztadatok
-		Text content1 = new Text("1. Jani");
-		Text content2 = new Text("2. Szilvi");
-		Text content3 = new Text("3. András");
-		Text content4 = new Text("4. Attila");
-		Text content5 = new Text("5. Barabás");
+		List<Winner> winners = db.getToplist(); 
+		
+		Text content1 = new Text("1. " + winners.get(0).getName() + " " + winners.get(0).getScore());
+		Text content2 = new Text("2. " + winners.get(1).getName() + " " + winners.get(1).getScore());
+		Text content3 = new Text("3. " + winners.get(2).getName() + " " + winners.get(2).getScore());
+		Text content4 = new Text("4. " + winners.get(3).getName() + " " + winners.get(3).getScore());
+		Text content5 = new Text("5. " + winners.get(4).getName() + " " + winners.get(4).getScore());
 		
 		StackPane footer = new StackPane();
 		footer.setPadding(new Insets(10));

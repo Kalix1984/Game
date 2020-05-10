@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun May 10 09:03:44 CEST 2020:
+ Derby The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088) változat betöltése: a816c00e-0171-fd65-917c-000009da4400 példány
+a(z) C:\Users\MSI\git\Game\NukaTapperGame\sampleDB adatbázis-könyvtáron: jdk.internal.loader.ClassLoaders$AppClassLoader@2dda6444 
+
+java.vendor=Oracle Corporation
+java.runtime.version=13.0.2+8
+user.dir=C:\Users\MSI\git\Game\NukaTapperGame
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Az adatbázis-osztálybetöltő elindult - derby.database.classpath=''

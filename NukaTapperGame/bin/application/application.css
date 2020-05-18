@@ -1,0 +1,25 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.root{
+	-fx-background-color: #2246D2;
+	-fx-font-family: "Verdana";
+	-fx-font-size: 15pt;
+}
+
+MenuButton{
+  	-fx-background-color: #162455;
+    -fx-background-radius: 20 20;
+    -fx-text-fill: #96CCD9;
+
+}
+MenuButton:hover{
+	 -fx-text-fill: white;
+	 -fx-background-color: #DDB92D;
+}
+
+Panel{
+	-fx-background-color:  #96CCD9;
+	-fx-background-radius: 20;
+	-fx-border-color : #108CAA;
+	-fx-border-radius: 15;
+	-fx-border-width: 4; 
+}
